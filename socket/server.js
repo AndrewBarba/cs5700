@@ -3,12 +3,12 @@
 /*=========================================*/
 
 var net = require('net');
-var port = 3000;
+var port = 27993;
 var count = 0;
 
 net.createServer(function(socket){
 
-	console.log('Socket opened...');
+	console.log('Socket opened...\n');
 
 	socket.on('data', function(data){
 		var text = data.toString('utf8');
@@ -22,9 +22,9 @@ net.createServer(function(socket){
 	});
 
 	socket.on('end', function(){
-		console.log('Socket closed...');
+		console.log('Socket closed.\n');
 	});
 
 }).listen(port);
 
-console.log('Running server on port: ' + port);
+console.log('\n\n' + 'Running server on port: ' + port + '\n\n');
