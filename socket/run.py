@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import sys, socket, operator
+import sys, socket, operator, ssl
 
 # constants
 CLASS = "cs5700fall2014"
@@ -34,6 +34,8 @@ for i, val in enumerate(sys.argv):
 # connect
 options = ( HOSTNAME, PORT )
 sock = socket.socket()
+if SSL:
+	sock = ssl.wrap_socket(sock, server_hostname=HOSTNAME)
 sock.connect(options)
 
 # send hello
