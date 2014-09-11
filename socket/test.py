@@ -13,11 +13,14 @@ print options
 sock = socket.socket()
 print sock
 
+print 'connecting...'
 sock.connect(options)
 print 'connected'
 
+print 'sending message...'
 sock.send('hello')
 print 'sent message'
 
+print 'closing...'
 sock.close()
 print 'closed'
