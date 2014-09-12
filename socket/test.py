@@ -1,17 +1,14 @@
-#!/usr/bin/python
+import sys, socket
 
-import sys, socket, operator, ssl
+HOSTNAME = sys.argv[-2]
+PORT = sys.argv[-1]
 
-# arguments
-HOSTNAME = sys.argv[-1]
-PORT = 27993
-
-# connect
-options = ( HOSTNAME, PORT )
+options = ( HOSTNAME, int(PORT) )
 print options
 
+print 'creating socket...'
 sock = socket.socket()
-print sock
+print 'socket created'
 
 print 'connecting...'
 sock.connect(options)
