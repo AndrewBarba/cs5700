@@ -1,13 +1,12 @@
 #!/usr/bin/python
-
 import sys, socket, operator, ssl
 
 # constants
-CLASS = "cs5700fall2014"
-NEUID = sys.argv[-1]
+CLASS    = "cs5700fall2014"
+NEUID    = sys.argv[-1]
 HOSTNAME = sys.argv[-2]
-PORT = 27993
-SSL = False
+PORT     = 27993
+SSL      = False
 
 # secret key
 SECRET = ''
