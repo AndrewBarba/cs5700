@@ -35,7 +35,7 @@ for i, val in enumerate(sys.argv):
 options = ( HOSTNAME, PORT )
 sock = socket.socket()
 if SSL:
-	sock = ssl.wrap_socket(sock, server_hostname=HOSTNAME)
+	sock = ssl.wrap_socket(sock)
 sock.connect(options)
 
 # send hello
