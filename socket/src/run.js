@@ -52,12 +52,15 @@ var socket = net.connect(PORT, HOSTNAME, function(){
 
 socket.on('data', function(data){
 	var text = data.toString('utf8');
+	console.log(text);
 	var res = new Response(text);
 	if (res.goodBye()) {
+		console.log('goodbye...');
 		SECRET = res.secret();
 		socket.close();
 	} else {
 		var ans = res.calculate();
+		console.log(ans);
 		var message = util.format('% %d\n', CLASS, parseInt(ans));
 		socket.write(message);
 	}
