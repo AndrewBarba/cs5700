@@ -101,8 +101,10 @@ socket.on('data', function(data){
 // socket is closed
 // print secret and cleanly exit process
 socket.on('close', function(err){
-	if (!err) {
+	if (SECRET) {
 		console.log(SECRET);
+	} else {
+		console.error('Failed to parse secret.');
 	}
 	process.exit();
 });
