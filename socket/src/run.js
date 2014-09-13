@@ -66,7 +66,7 @@ socket.on('data', function(data){
 	}
 });
 
-socket.on('end', function(){
+socket.on('close', function(){
 	console.log(SECRET);
 	process.exit();
 });
