@@ -98,8 +98,8 @@ function Response(text) {
 		var parts = this.parts();
 		var op = OPS[this.part(-2)];
 		if (op) {
-			var x = this.part(-3);
-			var y = this.part(-1);
+			var x = parseFloat(this.part(-3));
+			var y = parseFloat(this.part(-1));
 			return op(x, y);
 		} else {
 			return null;
