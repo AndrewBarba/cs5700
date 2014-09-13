@@ -60,7 +60,7 @@ socket.on('data', function(data){
 		socket.close();
 	} else {
 		var ans = res.calculate();
-		var message = util.format('% %d\n', CLASS, parseInt(ans));
+		var message = util.format('%s %d\n', CLASS, parseInt(ans));
 		console.log(message);
 		socket.write(message);
 	}
