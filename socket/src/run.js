@@ -140,7 +140,7 @@ function Response(text) {
 	};
 
 	// calculates the answer to a response
-	// returns null if the operation is unsupported
+	// returns null if the operation isn't supported
 	this.calculate = function() {
 		var parts = this.parts();
 		var op = OPS[this.part(-2)];
