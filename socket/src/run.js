@@ -4,6 +4,7 @@
 /*==========================================*/
 
 var net  = require('net')
+  , snet = require('tls')
   , util = require('util');
 
 /*==========================================*
@@ -53,7 +54,8 @@ var OPS = {
 /* Sockets
 /*==========================================*/
 
-var socket = net.connect(PORT, HOSTNAME, function(){
+var client = SSL ? snet : net;
+var socket = client.connect(PORT, HOSTNAME, function(){
 	var hello = util.format('%s %s %s\n', CLASS, 'HELLO', NEUID);
 	socket.write(hello);
 });
