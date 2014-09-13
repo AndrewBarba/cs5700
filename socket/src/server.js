@@ -14,7 +14,7 @@ net.createServer(function(socket){
 		var text = data.toString('utf8');
 		console.log(text);
 		if (count >= 10) {
-			socket.write('12345 hello_world BYE');
+			socket.write('12345 this_is_a_secret BYE');
 		} else {
 			socket.write('12345 10 / 3');
 			count++;
@@ -22,6 +22,7 @@ net.createServer(function(socket){
 	});
 
 	socket.on('end', function(){
+		count = 0;
 		console.log('Socket closed.\n');
 	});
 
