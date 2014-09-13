@@ -55,9 +55,8 @@ socket.on('data', function(data){
 	console.log(text);
 	var res = new Response(text);
 	if (res.goodBye()) {
-		console.log('goodbye...');
 		SECRET = res.secret();
-		socket.close();
+		socket.end();
 	} else {
 		var ans = res.calculate();
 		var message = util.format('%s %d\n', CLASS, parseInt(ans));
@@ -65,7 +64,7 @@ socket.on('data', function(data){
 	}
 });
 
-socket.on('close', function(){
+socket.on('end', function(){
 	console.log(SECRET);
 	process.exit();
 });
@@ -105,9 +104,7 @@ function Response(text) {
 	};
 
 	this.goodBye = function() {
-		var part = this.part(-1);
-		console.log(part);
-		return part == "BYE";
+		return this.part(-1) == "BYE";
 	};
 
 	this.secret = function() {
