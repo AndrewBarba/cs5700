@@ -54,8 +54,14 @@ var OPS = {
 /* Sockets
 /*==========================================*/
 
+var options = {
+	host: HOSTNAME,
+	port: PORT,
+	rejectUnauthorized: false
+}
+
 var client = SSL ? snet : net;
-var socket = client.connect(PORT, HOSTNAME, function(){
+var socket = client.connect(options, function(){
 	var hello = util.format('%s %s %s\n', CLASS, 'HELLO', NEUID);
 	socket.write(hello);
 });
