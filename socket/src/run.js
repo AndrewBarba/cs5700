@@ -15,6 +15,7 @@ var CLASS    = 'cs5700fall2014'
   , HOSTNAME = process.argv.pop()
   , SSL      = false
   , PORT     = 27993
+  , SSL_PORT = 27994
   , SECRET   = null;
 
 /*==========================================*
@@ -32,14 +33,21 @@ var OPS = {
 /* Parse Arguments
 /*==========================================*/
 
-process.argv.forEach(function(val, index){
-	if (val == '-p') {
-		PORT = process.argv[index + 1];
-	}
-	if (val == '-s') {
-		SSL = true;
-	}
-});
+(function(){
+	var _setPort = false;
+	process.argv.forEach(function(val, index){
+		if (val == '-p') {
+			PORT = process.argv[index + 1];
+			_setPort = true;
+		}
+		if (val == '-s') {
+			SSL = true;
+			if (!_setPort) {
+				PORT = SSL_PORT;
+			}
+		}
+	});
+})();
 
 /*==========================================*
 /* Sockets
