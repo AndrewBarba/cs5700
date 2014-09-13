@@ -100,7 +100,7 @@ socket.on('data', function(data){
 
 // socket is closed
 // print secret and cleanly exit process
-socket.on('close', function(err){
+socket.on('close', function(){
 	if (SECRET) {
 		console.log(SECRET);
 	} else {
