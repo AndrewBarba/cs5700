@@ -46,42 +46,71 @@ process.argv.forEach(function(val, index){
 /*==========================================*/
 
 var socket = net.connect(PORT, HOSTNAME, function(){
-	socket.write('HELLO');
+	var hello = util.format('%s %s %s\n', CLASS, 'HELLO', NEUID);
+	socket.write(hello);
 });
 
 socket.on('data', function(data){
 	var text = data.toString('utf8');
-	var parts = text.split(' ');
-	console.log(parts);
-	var y = parseInt(parts.pop());
-	var opString = parts.pop();
-	var x = parseInt(parts.pop());
-	var op = OPS[opString];
-	socket.write(CLASS + ' ' + op(x,y).toFixed(0));
+	var res = new Response(text);
+	if (res.goodBye()) {
+		SECRET = res.secret();
+		socket.close();
+	} else {
+		var ans = res.calculate();
+		var message = util.format('% %d\n', CLASS, parseInt(ans));
+		socket.write(message);
+	}
 });
 
 socket.on('end', function(){
-	console.log('connection closed...');
 	console.log(SECRET);
+	process.exit();
 });
 
+/*==========================================*
+/* Response Object
+/*==========================================*/
 
+function Response(text) {
+	
+	this.text = text;
+	
+	this.parts = function() {
+		return this.text.split(' ');
+	};
 
+	this.part = function(index) {
+		if (index >= 0) {
+			return this.parts()[index];
+		} else {
+			var parts = this.parts();
+			var len = parts.length;
+			return parts[len + index];
+		}
+	};
 
+	this.calculate = function() {
+		var parts = this.parts();
+		var op = OPS[this.part(-2)];
+		if (op) {
+			var x = this.part(-3);
+			var y = this.part(-1);
+			return op(x, y);
+		} else {
+			return null;
+		}
+	};
 
+	this.goodBye = function() {
+		return this.part(-1) == "BYE";
+	};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	this.secret = function() {
+		if (this.goodBye()) {
+			return this.part(-2);
+		} else {
+			return null;
+		}
+	};
+}
