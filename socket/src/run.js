@@ -105,6 +105,11 @@ socket.on('close', function(){
 	process.exit();
 });
 
+// handle errors gracefully
+socket.on('error', function(err){
+	console.error(err);
+});
+
 /*==========================================*
 /* Response Object
 /*==========================================*/
