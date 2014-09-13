@@ -61,13 +61,11 @@ socket.on('data', function(data){
 	} else {
 		var ans = res.calculate();
 		var message = util.format('%s %d\n', CLASS, parseInt(ans));
-		console.log(message);
 		socket.write(message);
 	}
 });
 
 socket.on('close', function(){
-	console.log('closed...');
 	console.log(SECRET);
 	process.exit();
 });
@@ -81,7 +79,7 @@ function Response(text) {
 	this.text = text;
 	
 	this.parts = function() {
-		return this.text.split(' ');
+		return this.text.trim().split(' ');
 	};
 
 	this.part = function(index) {
@@ -107,7 +105,9 @@ function Response(text) {
 	};
 
 	this.goodBye = function() {
-		return this.part(-1) == "BYE";
+		var part = this.part(-1);
+		console.log(part);
+		return part == "BYE";
 	};
 
 	this.secret = function() {
