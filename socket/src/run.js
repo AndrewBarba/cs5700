@@ -100,15 +100,15 @@ socket.on('data', function(data){
 
 // socket is closed
 // print secret and cleanly exit process
-socket.on('close', function(){
-	console.log(SECRET);
+socket.on('close', function(err){
+	if (!err) {
+		console.log(SECRET);
+	}
 	process.exit();
 });
 
 // handle errors gracefully
-socket.on('error', function(err){
-	console.error(err);
-});
+socket.on('error', console.error);
 
 /*==========================================*
 /* Response Object
