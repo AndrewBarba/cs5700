@@ -63,10 +63,10 @@ var options = {
 	rejectUnauthorized: false // don't verify SSL cert with root authority
 };
 
-// open socket
+// create socket
 // if SSL is ture, use tls insteap of tcp
 var client = SSL ? snet : net;
-var socket = client.connect(options);
+var socket = new client.Socket(options);
 
 // once connected, send our initial hello message
 socket.on('connect', function(){
@@ -111,6 +111,9 @@ socket.on('close', function(){
 
 // handle errors gracefully
 socket.on('error', console.error);
+
+// open the connection
+socket.connect();
 
 /*==========================================*
 /* Response Object
