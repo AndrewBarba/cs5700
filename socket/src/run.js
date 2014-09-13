@@ -60,13 +60,14 @@ socket.on('data', function(data){
 		socket.close();
 	} else {
 		var ans = res.calculate();
-		console.log(ans);
 		var message = util.format('% %d\n', CLASS, parseInt(ans));
+		console.log(message);
 		socket.write(message);
 	}
 });
 
 socket.on('close', function(){
+	console.log('closed...');
 	console.log(SECRET);
 	process.exit();
 });
