@@ -56,6 +56,10 @@ var OPS = {
 /* Sockets
 /*==========================================*/
 
+// socket client
+// if SSL is ture, use tls insteap of tcp
+var client = SSL ? snet : net;
+
 // connection options
 var options = {
 	host: HOSTNAME,
@@ -63,14 +67,9 @@ var options = {
 	rejectUnauthorized: false // don't verify SSL cert with root authority
 };
 
-// open socket
-// if SSL is ture, use tls insteap of tcp
-var client = SSL ? snet : net;
-var socket = client.connect(options);
-
-// once connected, send our initial hello message
-socket.on('connect', function(){
-	console.log('connected...');
+// open the connection
+// send our initial 'hello' message
+var socket = client.connect(options, function(){
 	var hello = util.format('%s %s %s\n', CLASS, 'HELLO', NEUID);
 	socket.write(hello);
 });
