@@ -1,5 +1,5 @@
 /*=========================================*/
-/* Node.js TCP Server
+/* Node.js TCP Testing Server
 /*=========================================*/
 
 var net = require('net');

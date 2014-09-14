@@ -1,3 +1,7 @@
+"""
+Simple python script to help learn basic socket API
+"""
+
 import sys, socket
 
 HOSTNAME = sys.argv[-2]

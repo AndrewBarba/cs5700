@@ -1,4 +1,10 @@
 #!/usr/bin/python
+
+"""
+Project 1 Solution written in Python
+"""
+
+# dependencies
 import sys, socket, operator, ssl
 
 # constants

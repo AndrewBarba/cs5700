@@ -1,3 +1,29 @@
 Andrew Barba
 000546770
 https://github.com/AndrewBarba
+
+Part 1:
+My solution to this project began with understanding Python's socket API. In
+order to learn and test a simple socket connection I created `src/test.py`
+which opens a single socket, sends one message, and then closes the socket. 
+When I began the project the real server was not running yet so I decided to 
+make my own. After having a basic understanding of python sockets, I wrote a 
+small Node.js TCP server that loosely implements the protocol of the project 
+server. With my new test server I began implementing the solution in Python
+and testing each part of the protocol along the way. Once the real server
+was up and running I ran my Python solution and was greeted with my secret key.
+From here, I began implementing the SSL equivaliant which only required a
+couple extra lines of code due to Python's abstraction over TLS sockets.
+
+Part 2:
+Being an avid Node.js developer, I submitted a request to the systems guys
+to have Node 0.10.x installed on all CCIS machines. Within a couple hours the
+machines were updated and I began building an equivilant solution in Node.js.
+The funcitonal and asynchronous nature of Node makes for a much cleaner solution
+than the Python equivlant. I personally find the Node solution to be much more
+readable, but this is also a bit bias due to my prior experience with Node
+and the simple fact that doing somthing a second time will most likely turn
+out better than the first time. 
+
+I decided to turn in the Node.js solution. The Node.js and Python solutions
+can be found in the `src` directory as `run.js` and `run.py` respectively.

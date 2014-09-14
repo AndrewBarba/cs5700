@@ -1,3 +1,6 @@
+/**
+ * Project 1 Solution written in Node.js
+ */
 
 /*==========================================*
 /* Dependencies
@@ -74,7 +77,7 @@ var socket = client.connect(options, function(){
 	socket.write(hello);
 });
 
-// event handler when we recieve a data from socket
+// event handler called when we recieve data from the socket
 socket.on('data', function(data){
 	
 	// parse buffer into a string
@@ -98,9 +101,9 @@ socket.on('data', function(data){
 	}
 });
 
-// socket is closed
-// print secret and cleanly exit process
+// socket closed event handler
 socket.on('close', function(){
+	// socket is clsoed, print secret and cleanly exit process
 	if (SECRET) {
 		console.log(SECRET);
 	} else {
@@ -128,7 +131,7 @@ function Response(text) {
 	};
 
 	// getter for easily grabbing parts of our response
-	// part(-Int) returns a part form the end of the array
+	// part(-Int) returns a part from the end of the array
 	this.part = function(index) {
 		if (index >= 0) {
 			return this.parts()[index];
@@ -140,7 +143,7 @@ function Response(text) {
 	};
 
 	// calculates the answer to a response
-	// returns null if the operation isn't supported
+	// returns (null) if the operation isn't supported
 	this.calculate = function() {
 		var parts = this.parts();
 		var op = OPS[this.part(-2)];
