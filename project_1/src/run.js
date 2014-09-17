@@ -145,7 +145,6 @@ function Response(text) {
 	// calculates the answer to a response
 	// returns (null) if the operation isn't supported
 	this.calculate = function() {
-		var parts = this.parts();
 		var op = OPS[this.part(-2)];
 		if (op) {
 			var x = parseFloat(this.part(-3));
