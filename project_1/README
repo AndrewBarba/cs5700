@@ -1,8 +1,9 @@
 Andrew Barba
 000546770
 https://github.com/AndrewBarba
+------------------------------
 
-Part 1:
+#### Part 1: ####
 My solution to this project began with understanding Python's socket API. In
 order to learn and test a simple socket connection I created `src/test.py`
 which opens a single socket, sends one message, and then closes the socket. 
@@ -15,7 +16,7 @@ was up and running I ran my Python solution and was greeted with my secret key.
 From here, I began implementing the SSL equivaliant which only required a
 couple extra lines of code due to Python's abstraction over TLS sockets.
 
-Part 2:
+#### Part 2: ####
 Being an avid Node.js developer, I submitted a request to the systems guys
 to have Node 0.10.x installed on all CCIS machines. Within a couple hours the
 machines were updated and I began building an equivilant solution in Node.js.
