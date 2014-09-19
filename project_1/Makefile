@@ -1,1 +1,2 @@
 default:
+	chmod +x ./client
