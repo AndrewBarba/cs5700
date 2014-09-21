@@ -2,7 +2,7 @@ default:
 	chmod +x ./webcrawler
 
 crawler:
-	./webcrawler cs5700f14.ccs.neu.edu 000546770
+	./webcrawler 000546770  IT40Y3BI
 
 updates:
 	npm outdated --depth 0
