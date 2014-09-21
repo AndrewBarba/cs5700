@@ -49,6 +49,38 @@ Fakebook.prototype.login = function(username, password, next) {
 	});
 };
 
+Fakebook.prototype.crawl = function(url, next) {
+	return this.get(url, null, next);
+};
+
+Fakebook.prototype.parseLinks = function(html) {
+	var re = /href=("|')[a-zA-Z0-9:\.\/-]*("|')/gi;
+	var matches = html.match(re) || [];
+	var links = [];
+	for (var i = 0; i < matches.length; i++) {
+		var match = matches[i].trim();
+		var link = match.replace(/(href=|'|")/gi, '');
+		if (link.indexOf('://') < 0) {
+			link = this.httpUrl(link);
+		}
+		if (link.indexOf(BASE_PATH) == 0) {
+			links.push(link);
+		}
+	}
+	return links;
+};
+
+Fakebook.prototype.parseSecrets = function(html) {
+	var re = /[a-zA-Z0-9]{64}/gi;
+	var matches = html.match(re) || [];
+	var secrets = [];
+	for (var i = 0; i < matches.length; i++) {
+		var match = matches[i];
+		secrets.push(match);
+	}
+	return secrets;
+};
+
 /*==========================================*
 /* Utilities
 /*==========================================*/
@@ -57,7 +89,11 @@ Fakebook.prototype.login = function(username, password, next) {
  * Returns a fully qualified http url to Fakebook
  */
 Fakebook.prototype.httpUrl = function(endpoint) {
-	return BASE_PATH + endpoint;
+	if (endpoint.indexOf(BASE_PATH) < 0) {
+		return BASE_PATH + endpoint;
+	} else {
+		return endpoint;
+	}
 };
 
 /**
@@ -154,23 +190,3 @@ Fakebook.prototype.post = function(endpoint, data, next) {
 };
 
 module.exports = new Fakebook();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
