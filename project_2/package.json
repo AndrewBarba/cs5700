@@ -1,0 +1,16 @@
+{
+    "name": "abarba-webcrawler",
+    "version": "1.0.0",
+    "description": "Web crawler written in Node.js for CS5700",
+    "url": "https://admin.tablelist.com",
+    "author": "Andrew Barba",
+
+    "engines" : {
+        "node" : "0.10.x"
+    },
+
+    "dependencies": {
+        "underscore": "1.7.x",
+        "async": "0.9.x"
+    }
+}
