@@ -2,7 +2,7 @@
     "name": "abarba-webcrawler",
     "version": "1.0.0",
     "description": "Web crawler written in Node.js for CS5700",
-    "url": "https://admin.tablelist.com",
+    "url": "https://github.com/AndrewBarba/cs5700",
     "author": "Andrew Barba",
 
     "engines" : {
