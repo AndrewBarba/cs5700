@@ -19,7 +19,7 @@ var net   = require('net')
 
 var USER_NAME = process.argv[2];
 var PASSWORD = process.argv[3];
-var MAX_SECRETS = 5;
+var MAX_SECRETS = process.argv[4] || 5;
 
 /*==========================================*
 /* Crawler
