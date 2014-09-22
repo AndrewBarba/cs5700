@@ -192,8 +192,10 @@ function Request(method, url, data, headers) {
 	};
 
 	this.requestString = function() {
+		var http = require('./http');
+
 		var path = this.urlParts().pathname;
-		var dataString = require('./http').dataString(data);
+		var dataString = http.dataString(data);
 		var isURLData = (method == METHODS.GET) || (method == METHODS.DELETE);
 
 		// append url data if needed
@@ -206,7 +208,7 @@ function Request(method, url, data, headers) {
 		}
 
 		// build request
-		var req = _this.initialLine(method, path);
+		var req = http.initialLine(method, path);
 
 		// header lines
 		var keys = Object.keys(headers);
