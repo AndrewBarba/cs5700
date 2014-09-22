@@ -45,6 +45,8 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 		function(next) {
 			var url = QUEUE.pop();
 
+			console.log(url);
+
 			fb.crawl(url, function(err, res, body){
 				if (err) return next();
 
