@@ -20,7 +20,7 @@ var net   = require('net')
 var USER_NAME = process.argv[2];
 var PASSWORD = process.argv[3];
 var MAX_SECRETS = process.argv[4] || 5;
-var DEBUG = process.argv.length >= 5;
+var DEBUG = process.argv.indexOf('DEBUG') >= 0;
 
 /*==========================================*
 /* Logging
