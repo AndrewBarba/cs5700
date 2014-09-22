@@ -46,11 +46,10 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 			var url = QUEUE.pop();
 
 			fb.crawl(url, function(err, res, body){
-				if (err) console.log(err);
 				if (err) return next();
 
 				console.log(url);
-				
+
 				// mark the page as crawled
 				HISTORY[url] = true;
 				

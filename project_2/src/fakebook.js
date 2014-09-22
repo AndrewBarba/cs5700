@@ -142,8 +142,13 @@ Fakebook.prototype.get = function(endpoint, params, next) {
 		_this.importCookies(res.headers['set-cookie']);
 
 		// retry the request if it fails
-		if (res.statusCode >= 400) {
+		if (res.statusCode >= 500) {
 			return _this.get(endpoint, params, next);
+		};
+
+		// abandon request
+		if (res.statusCode >= 400) {
+			return next(new Error('Not Found'));
 		};
 
 		// handle redirect
@@ -172,7 +177,7 @@ Fakebook.prototype.post = function(endpoint, data, next) {
 		_this.importCookies(res.headers['set-cookie']);
 
 		// retry the request if it fails
-		if (res.statusCode >= 400) {
+		if (res.statusCode >= 500) {
 			return _this.post(endpoint, data, next);
 		};
 
