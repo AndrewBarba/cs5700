@@ -1,5 +1,5 @@
 {
-    "name": "abarba-webcrawler",
+    "name": "cs5700-webcrawler",
     "version": "1.0.0",
     "description": "Web crawler written in Node.js for CS5700",
     "url": "https://github.com/AndrewBarba/cs5700",
