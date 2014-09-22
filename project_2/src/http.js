@@ -24,9 +24,7 @@ var METHODS = {
 /* Service
 /*==========================================*/
 
-var HTTP = function(){
-	this.connections = 0;
-};
+var HTTP = function(){};
 
 /*==========================================*
 /* API
@@ -166,19 +164,17 @@ function Request(method, url, data, headers) {
 	data = data || {};
 	headers = headers || {};
 
+	this.url = url;
+	this.method = method;
+	this.headers = headers;
+	this.data = data;
+	this.host = liburl.parse(url).host;
+	this.path = liburl.parse(url).pathname;
 	this.responseData = '';
-
-	this.url = function() {
-		return url;
-	};
-
-	this.urlParts = function() {
-		return liburl.parse(this.url());
-	};
 
 	this.requestOptions = function() {
 		return {
-			host: this.urlParts().host,
+			host: this.host,
 			port: 80
 		};
 	};
@@ -194,7 +190,7 @@ function Request(method, url, data, headers) {
 	this.requestString = function() {
 		var http = require('./http');
 
-		var path = this.urlParts().pathname;
+		var path = this.path;
 		var dataString = http.dataString(data);
 		var isURLData = (method == METHODS.GET) || (method == METHODS.DELETE);
 
@@ -251,7 +247,6 @@ HTTP.prototype.request = function(method, url, data, headers, next) {
 
 	var options = request.requestOptions();
 	var socket = net.connect(options, function(){
-		_this.connections++;
 		var requestString = request.requestString(); 
 		socket.write(requestString);
 	});
@@ -261,14 +256,12 @@ HTTP.prototype.request = function(method, url, data, headers, next) {
 	});
 
 	socket.on('close', function(){
-		_this.connections--;
 		var data = request.dataString();
 		var response = new Response(data);
 		next(null, response, response.body);
 	});
 
 	socket.on('error', function(err){
-		_this.connections--;
 		next(err);
 	});
 
