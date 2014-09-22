@@ -91,9 +91,12 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 		},
 
 		// nothing left to crawl, print our secrets
+		// cleanly exit process
 		function() {
 			_.each(SECRETS, function(secret){
 				console.log(secret);
 			});
+
+			process.exit();
 		});
 });
