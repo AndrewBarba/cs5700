@@ -53,41 +53,44 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 		},
 
 		// crawl
-		function(next) {
-			
-			// grab last url off queue
-			var url = QUEUE.pop();
-			
-			// mark the page as crawled
-			HISTORY[url] = true;
+		function(done) {
 
-			fb.crawl(url, function(err, res, body){
-				
-				// check for error, could be a 40x error so we skip
-				if (err) {
-					console.debug(err);
-					console.debug(res.statusCode);
-					return next();
-				}
-				
-				// gather uncrawled links and add them to the queue
-				var links = fb.parseLinks(body);
-				_.each(links, function(link){
-					if (!HISTORY[link]) {
-						QUEUE.push(link);
+			async.each(QUEUE, function(url, next){
+
+				// mark the page as crawled
+				HISTORY[url] = true;
+
+				fb.crawl(url, function(err, res, body){
+					
+					// check for error, could be a 40x error so we skip
+					if (err) {
+						console.debug(err);
+						console.debug(res.statusCode);
+						return next();
 					}
-				});
+					
+					// gather uncrawled links and add them to the queue
+					var links = fb.parseLinks(body);
+					_.each(links, function(link){
+						if (!HISTORY[link]) {
+							QUEUE.push(link);
+						}
+					});
 
-				// grab any secrets that may have been on the page
-				var secrets = fb.parseSecrets(body);
-				if (secrets && secrets.length) {
-					SECRETS = _.union(SECRETS, secrets);
-					console.debug('Found Secret!');
-					console.debug(secrets);
-				}
-		
-				next();
-			});
+					// grab any secrets that may have been on the page
+					var secrets = fb.parseSecrets(body);
+					if (secrets && secrets.length) {
+						SECRETS = _.union(SECRETS, secrets);
+						console.debug('Found Secret!');
+						console.debug(secrets);
+					}
+			
+					next();
+				});
+				
+			}, done);
+
+			QUEUE = [];
 		},
 
 		// nothing left to crawl, print our secrets
