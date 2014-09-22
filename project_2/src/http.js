@@ -4,7 +4,7 @@
 /*==========================================*/
 
 var net = require('net')
-  , url = require('url')
+  , liburl = require('url')
   , util = require('util');
 
 /*==========================================*
@@ -131,7 +131,7 @@ HTTP.prototype.request = function(method, urlString, data, headers, next) {
 	headers = headers || {};
 
 	var _this = this;
-	var urlParts = url.parse(urlString)
+	var urlParts = liburl.parse(urlString);
 	var host = urlParts.host;
 	var path = urlParts.pathname;
 	var dataString = this.dataString(data);

@@ -135,7 +135,10 @@ Fakebook.prototype.get = function(endpoint, params, next) {
 	var url = this.httpUrl(endpoint);
 	var headers = this.defaultHeaders();
 
+	console.log(url);
 	http.get(url, params, headers, function(err, res, body){
+		console.log(url);
+
 		if (err) return next(err);
 
 		// import cookies
@@ -196,9 +199,9 @@ Fakebook.prototype.post = function(endpoint, data, next) {
 		// handle redirect
 		if (res.statusCode == 301 || res.statusCode == 302) {
 			console.debug('POST 300: ' + endpoint + ' - ' + url);
-			var url = res.headers.location;
+			var redirect = res.headers.location;
 			var headers = _this.defaultHeaders();
-			return http.get(url, {}, headers, next);
+			return http.get(redirect, {}, headers, next);
 		};
 
 		next(null, res, body);
