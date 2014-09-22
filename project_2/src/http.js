@@ -192,8 +192,8 @@ function Request(method, url, data, headers) {
 	};
 
 	this.requestString = function() {
-		var http = require('./http');
-		var dataString = http.dataString(data);
+		var path = this.urlParts().pathname;
+		var dataString = require('./http').dataString(data);
 		var isURLData = (method == METHODS.GET) || (method == METHODS.DELETE);
 
 		// append url data if needed
