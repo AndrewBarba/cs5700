@@ -25,7 +25,6 @@ var METHODS = {
 /*==========================================*/
 
 var HTTP = function(){
-
 	this.connections = 0;
 };
 
@@ -33,18 +32,34 @@ var HTTP = function(){
 /* API
 /*==========================================*/
 
+/**
+ * Performs an HTTP GET request
+ * Attaches given params to the url
+ */
 HTTP.prototype.get = function(url, params, headers, next) {
 	return this.request(METHODS.GET, url, params, headers, next);
 };
 
+/**
+ * Performs an HTTP POST request
+ * Writes given body to the end of the request
+ */
 HTTP.prototype.post = function(url, body, headers, next) {
 	return this.request(METHODS.POST, url, body, headers, next);
 };
 
+/**
+ * Performs an HTTP PUT request
+ * Writes given body to the end of the request
+ */
 HTTP.prototype.put = function(url, body, headers, next) {
 	return this.request(METHODS.PUT, url, body, headers, next);
 };
 
+/**
+ * Performs an HTTP DELETE request
+ * Attaches given params to the url
+ */
 HTTP.prototype.delete = function(url, params, headers, next) {
 	return this.request(METHODS.DELETE, url, params, headers, next);
 };
@@ -53,6 +68,11 @@ HTTP.prototype.delete = function(url, params, headers, next) {
 /* Utilities
 /*==========================================*/
 
+/**
+ * Converts a key-value map into an HTTP data string
+ * Each piece of data is seperated in the string according
+ * to the provided delimiter
+ */
 HTTP.prototype.dataString = function(params, delimiter) {
 	params = params || {};
 	delimiter = delimiter || '&';
@@ -69,10 +89,18 @@ HTTP.prototype.dataString = function(params, delimiter) {
     return data.join(delimiter);
 };
 
+/**
+ * Convenience method for creating a data string
+ * with proper cookie delimiter
+ */
 HTTP.prototype.cookieString = function(cookies) {
 	return this.dataString(cookies, '; ');
 };
 
+/**
+ * Returns an HTTP initial line string based on the provided
+ * HTTP method and path
+ */
 HTTP.prototype.initialLine = function(method, path) {
 	return util.format('%s %s %s%s', method.toUpperCase(), path, HTTP_VERSION, LINE_ENDING);
 };
@@ -81,6 +109,11 @@ HTTP.prototype.initialLine = function(method, path) {
 /* HTTP Response
 /*==========================================*/
 
+/**
+ * An HTTP response object
+ * var body: the http response body
+ * var headers: the http headers as a key-value map
+ */
 function Response(res) {
 
 	var parts = res.split(LINE_ENDING);
@@ -125,40 +158,55 @@ function Response(res) {
 /* HTTP Request
 /*==========================================*/
 
-HTTP.prototype.request = function(method, url, data, headers, next) {
-	next = next || function(){};
+/**
+ * HTTP request object used to abstract basic
+ * protocol related things
+ */
+function Request(method, url, data, headers) {
 	data = data || {};
 	headers = headers || {};
 
-	var _this = this;
-	var urlParts = liburl.parse(url);
-	var host = urlParts.host;
-	var path = urlParts.pathname;
-	var dataString = this.dataString(data);
-	var isURLData = (method == METHODS.GET) || (method == METHODS.DELETE);
+	this.responseData = '';
 
-	// append url data if needed
-	// or set content length
-	if (isURLData) {
-		path = path + '?' + dataString;
-	} else {
-		headers['Content-Length'] = encodeURI(dataString).split(/%..|./).length - 1;
-		headers['Content-Type'] = 'application/x-www-form-urlencoded';
-	}
-
-	var options = {
-		host: host,
-		port: 80
+	this.url = function() {
+		return url;
 	};
 
-	var socket = net.connect(options, function(){
-		_this.connections++;
+	this.urlParts = function() {
+		return liburl.parse(this.url());
+	};
+
+	this.requestOptions = function() {
+		return {
+			host: this.urlParts().host,
+			port: 80
+		};
+	};
+
+	this.data = function(data) {
+		this.responseData += data;
+	};
+
+	this.dataString = function() {
+		return this.responseData.toString('utf8');
+	};
+
+	this.requestString = function() {
+		var http = require('./http');
+		var dataString = http.dataString(data);
+		var isURLData = (method == METHODS.GET) || (method == METHODS.DELETE);
+
+		// append url data if needed
+		// or set content length
+		if (isURLData) {
+			path = path + '?' + dataString;
+		} else {
+			headers['Content-Length'] = encodeURI(dataString).length;
+			headers['Content-Type'] = 'application/x-www-form-urlencoded';
+		}
 
 		// build request
-		var req = '';
-		
-		// initial line
-		req += _this.initialLine(method, path);
+		var req = _this.initialLine(method, path);
 
 		// header lines
 		var keys = Object.keys(headers);
@@ -176,18 +224,44 @@ HTTP.prototype.request = function(method, url, data, headers, next) {
 			req += dataString;
 		}
 
-		socket.write(req);
+		return req;
+	};
+};
+
+/*==========================================*
+/* HTTP Request
+/*==========================================*/
+
+/**
+ * Makes a single HTTP request with the given method
+ * to the given url. Properly writes provided data
+ * to request if it is a POST or PUT and attahces
+ * provided data to url if it is a GET or DELETE.
+ * Converts a key-value store of headers into proper
+ * HTTP headers.
+ */
+HTTP.prototype.request = function(method, url, data, headers, next) {
+	next = next || function(){};
+
+	var _this = this;
+
+	var request = new Request(method, url, data, headers);
+
+	var options = request.requestOptions();
+	var socket = net.connect(options, function(){
+		_this.connections++;
+		var requestString = request.requestString(); 
+		socket.write(requestString);
 	});
 
-	var res = '';
-
 	socket.on('data', function(data){
-		res += data;
+		request.data(data);
 	});
 
 	socket.on('close', function(){
 		_this.connections--;
-		var response = new Response(res.toString('utf8'));
+		var data = request.dataString();
+		var response = new Response(data);
 		next(null, response, response.body);
 	});
 

@@ -19,7 +19,6 @@ var ENDPOINTS = {
 /*==========================================*/
 
 var Fakebook = function(){
-
 	this.cookies = {};
 };
 
@@ -49,10 +48,24 @@ Fakebook.prototype.login = function(username, password, next) {
 	});
 };
 
+/**
+ * Clears all cookies, effectively logging us out from Fakebook
+ */
+Fakebook.prototype.logout = function() {
+	this.cookies = {};
+};
+
+/**
+ * A convenecince method for GETing a webpage
+ */
 Fakebook.prototype.crawl = function(url, next) {
 	return this.get(url, null, next);
 };
 
+/**
+ * Returns an array of all valid Fakebook links 
+ * found in a given string of html
+ */
 Fakebook.prototype.parseLinks = function(html) {
 	var re = /href=("|')[a-zA-Z0-9:\.\/-]*("|')/gi;
 	var matches = html.match(re) || [];
@@ -70,6 +83,10 @@ Fakebook.prototype.parseLinks = function(html) {
 	return links;
 };
 
+/**
+ * Returns an array of all secret tokens 
+ * found in a given string of html
+ */
 Fakebook.prototype.parseSecrets = function(html) {
 	var re = /[a-zA-Z0-9]{64}/gi;
 	var matches = html.match(re) || [];
@@ -124,6 +141,10 @@ Fakebook.prototype.importCookies = function(cookies) {
 		this.setCookie(parts[0], parts[1]);
 	}
 };
+
+/*==========================================*
+/* Requests
+/*==========================================*/
 
 /**
  * Performs a GET request to the fakebook web service
