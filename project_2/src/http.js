@@ -24,7 +24,10 @@ var METHODS = {
 /* Service
 /*==========================================*/
 
-var HTTP = function(){};
+var HTTP = function(){
+
+	this.connections = 0;
+};
 
 /*==========================================*
 /* API
@@ -149,6 +152,7 @@ HTTP.prototype.request = function(method, urlString, data, headers, next) {
 	};
 
 	var socket = net.connect(options, function(){
+		_this.connections++;
 
 		// build request
 		var req = '';
@@ -178,16 +182,17 @@ HTTP.prototype.request = function(method, urlString, data, headers, next) {
 	var res = '';
 
 	socket.on('data', function(data){
-		var text = data.toString('utf8');
-		res += text;
+		res += data;
 	});
 
 	socket.on('close', function(){
-		var response = new Response(res);
+		_this.connections--;
+		var response = new Response(res.toString('utf8'));
 		next(null, response, response.body);
 	});
 
 	socket.on('error', function(err){
+		_this.connections--;
 		next(err);
 	});
 
