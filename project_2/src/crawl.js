@@ -44,6 +44,8 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 			if (HISTORY[url]) return;
 			HISTORY[url] = true;
 			
+			console.log(url);
+			
 			fb.crawl(url, function(err, res, body){
 				if (err) return;
 
