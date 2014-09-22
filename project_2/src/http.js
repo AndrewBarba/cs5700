@@ -248,7 +248,6 @@ HTTP.prototype.request = function(method, url, data, headers, next) {
 	var options = request.requestOptions();
 	var socket = net.connect(options, function(){
 		var requestString = request.requestString(); 
-		console.debug(requestString);
 		socket.write(requestString);
 	});
 
