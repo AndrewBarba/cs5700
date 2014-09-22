@@ -44,7 +44,7 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 			HISTORY[url] = true;
 			
 			fb.crawl(url, function(err, res, body){
-				if (!body) console.log(res);
+				if (err) return;
 
 				// grab any secrets that may have been on the page
 				var secrets = fb.parseSecrets(body);

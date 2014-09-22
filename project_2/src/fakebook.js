@@ -54,7 +54,6 @@ Fakebook.prototype.crawl = function(url, next) {
 };
 
 Fakebook.prototype.parseLinks = function(html) {
-	html = html || '';
 	var re = /href=("|')[a-zA-Z0-9:\.\/-]*("|')/gi;
 	var matches = html.match(re) || [];
 	var links = [];
@@ -72,7 +71,6 @@ Fakebook.prototype.parseLinks = function(html) {
 };
 
 Fakebook.prototype.parseSecrets = function(html) {
-	html = html || '';
 	var re = /[a-zA-Z0-9]{64}/gi;
 	var matches = html.match(re) || [];
 	var secrets = [];
