@@ -199,7 +199,7 @@ function Request(method, url, data, headers) {
 		if (isURLData) {
 			path = path + '?' + dataString;
 		} else {
-			headers['Content-Length'] = encodeURI(dataString).length;
+			headers['Content-Length'] = encodeURI(dataString).split(/%..|./).length - 1;
 			headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
 
@@ -248,6 +248,7 @@ HTTP.prototype.request = function(method, url, data, headers, next) {
 	var options = request.requestOptions();
 	var socket = net.connect(options, function(){
 		var requestString = request.requestString(); 
+		console.debug(requestString);
 		socket.write(requestString);
 	});
 
