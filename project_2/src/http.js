@@ -186,6 +186,7 @@ HTTP.prototype.request = function(method, urlString, data, headers, next) {
 	});
 
 	socket.on('close', function(){
+		_this.connections--;
 		var response = new Response(res.toString('utf8'));
 		next(null, response, response.body);
 	});

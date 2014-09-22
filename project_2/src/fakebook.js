@@ -143,17 +143,22 @@ Fakebook.prototype.get = function(endpoint, params, next) {
 
 		// retry the request if it fails
 		if (res.statusCode >= 500) {
+			console.debug('500: ' + url);
 			return _this.get(endpoint, params, next);
 		};
 
 		// abandon request
 		if (res.statusCode >= 400) {
+			console.debug('400: ' + url);
 			return next(new Error('Not Found'));
 		};
 
 		// handle redirect
 		if (res.statusCode == 301 || res.statusCode == 302) {
-			return http.get(res.headers.location, null, headers, next);
+			console.debug('300: ' + url);
+			var url = res.headers.location;
+			var headers = _this.defaultHeaders();
+			return http.get(url, {}, headers, next);
 		};
 
 		next(null, res, body);
@@ -178,11 +183,19 @@ Fakebook.prototype.post = function(endpoint, data, next) {
 
 		// retry the request if it fails
 		if (res.statusCode >= 500) {
+			console.debug('500: ' + url);
 			return _this.post(endpoint, data, next);
+		};
+
+		// abandon request
+		if (res.statusCode >= 400) {
+			console.debug('400: ' + url);
+			return next(new Error('Not Found'));
 		};
 
 		// handle redirect
 		if (res.statusCode == 301 || res.statusCode == 302) {
+			console.debug('300: ' + url);
 			var url = res.headers.location;
 			var headers = _this.defaultHeaders();
 			return http.get(url, {}, headers, next);

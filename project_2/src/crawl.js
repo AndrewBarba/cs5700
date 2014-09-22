@@ -20,6 +20,16 @@ var net   = require('net')
 var USER_NAME = process.argv[2];
 var PASSWORD = process.argv[3];
 var MAX_SECRETS = process.argv[4] || 5;
+var DEBUG = process.argv.pop() == 'DEBUG';
+
+/*==========================================*
+/* Logging
+/*==========================================*/
+
+console.debug = function(message) {
+	if (!DEBUG) return;
+	console.log(message);
+};
 
 /*==========================================*
 /* Crawler
@@ -32,6 +42,7 @@ var QUEUE = [];
 // begin by logging into Fakebook
 fb.login(USER_NAME, PASSWORD, function(err, res, body){
 	
+	// load initial links into queue
 	QUEUE = _.union(QUEUE, fb.parseLinks(body));
 
 	async.whilst(
@@ -51,9 +62,15 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 			HISTORY[url] = true;
 
 			fb.crawl(url, function(err, res, body){
-				if (err) return next();
 				
-				// gather uncrawled links
+				// check for error, could be a 40x error so we skip
+				if (err) {
+					console.debug(err);
+					console.debug(res.statusCode);
+					return next();
+				}
+				
+				// gather uncrawled links and add them to the queue
 				var links = fb.parseLinks(body);
 				_.each(links, function(link){
 					if (!HISTORY[link]) {
@@ -63,7 +80,11 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 
 				// grab any secrets that may have been on the page
 				var secrets = fb.parseSecrets(body);
-				SECRETS = _.union(SECRETS, secrets);
+				if (secrets && secrets.length) {
+					SECRETS = _.union(SECRETS, secrets);
+					console.debug('Found Secret!');
+					console.debug(secrets);
+				}
 		
 				next();
 			});
