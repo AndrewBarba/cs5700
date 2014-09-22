@@ -55,7 +55,7 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 		// crawl
 		function(done) {
 
-			async.each(QUEUE, function(url, next){
+			async.eachLimit(QUEUE, 10, function(url, next){
 
 				// mark the page as crawled
 				HISTORY[url] = true;
@@ -87,7 +87,7 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 			
 					next();
 				});
-				
+
 			}, done);
 
 			QUEUE = [];
