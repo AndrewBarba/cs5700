@@ -53,7 +53,7 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 			fb.crawl(url, function(err, res, body){
 				if (err) return next();
 
-				console.log(url);
+				console.log(res.body.slice(0, 32));
 				
 				// gather uncrawled links
 				var links = fb.parseLinks(body);
