@@ -43,15 +43,17 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 
 		// crawl
 		function(next) {
+			
+			// grab last url off queue
 			var url = QUEUE.pop();
+			
+			// mark the page as crawled
+			HISTORY[url] = true;
 
 			fb.crawl(url, function(err, res, body){
 				if (err) return next();
 
 				console.log(url);
-
-				// mark the page as crawled
-				HISTORY[url] = true;
 				
 				// gather uncrawled links
 				var links = fb.parseLinks(body);
