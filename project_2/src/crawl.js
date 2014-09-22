@@ -33,7 +33,7 @@ var QUEUE = [];
 fb.login(USER_NAME, PASSWORD, function(err, res, body){
 	
 	QUEUE = _.union(QUEUE, fb.parseLinks(body));
-	
+
 	async.whilst(
 
 		// stop if the queue is empty or if we have 5 secrets

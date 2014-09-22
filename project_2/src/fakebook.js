@@ -109,8 +109,6 @@ Fakebook.prototype.defaultHeaders = function() {
  * Stores a cookie locally to be sent on all future requests
  */
 Fakebook.prototype.setCookie = function(key, value) {
-	key = decodeURIComponent(key);
-	value = decodeURIComponent(value);
 	this.cookies[key] = value;
 };
 

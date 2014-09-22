@@ -3,13 +3,16 @@
 /* Dependencies
 /*==========================================*/
 
-var http = require('http')
-  , url = require('url');
+var net = require('net')
+  , url = require('url')
+  , util = require('util');
 
 /*==========================================*
 /* Constants
 /*==========================================*/
 
+var HTTP_VERSION = 'HTTP/1.0';
+var LINE_ENDING = '\r\n';
 var METHODS = {
 	GET: 'GET',
 	POST: 'POST',
@@ -22,6 +25,30 @@ var METHODS = {
 /*==========================================*/
 
 var HTTP = function(){};
+
+/*==========================================*
+/* API
+/*==========================================*/
+
+HTTP.prototype.get = function(url, params, headers, next) {
+	return this.request(METHODS.GET, url, params, headers, next);
+};
+
+HTTP.prototype.post = function(url, body, headers, next) {
+	return this.request(METHODS.POST, url, body, headers, next);
+};
+
+HTTP.prototype.put = function(url, body, headers, next) {
+	return this.request(METHODS.PUT, url, body, headers, next);
+};
+
+HTTP.prototype.delete = function(url, params, headers, next) {
+	return this.request(METHODS.DELETE, url, params, headers, next);
+};
+
+/*==========================================*
+/* Utilities
+/*==========================================*/
 
 HTTP.prototype.dataString = function(params, delimiter) {
 	params = params || {};
@@ -43,11 +70,64 @@ HTTP.prototype.cookieString = function(cookies) {
 	return this.dataString(cookies, '; ');
 };
 
+HTTP.prototype.initialLine = function(method, path) {
+	return util.format('%s %s %s%s', method.toUpperCase(), path, HTTP_VERSION, LINE_ENDING);
+};
+
+/*==========================================*
+/* HTTP Response
+/*==========================================*/
+
+function Response(res) {
+
+	var parts = res.split(LINE_ENDING);
+
+	// set headers
+	this.headers = {};
+
+	// set body
+	this.body = parts.pop();
+
+	// loop through parts
+	for (var i = 0; i < parts.length; i++) {
+
+		var part = parts[i];
+
+		// set status code
+		if (i == 0) {
+			var line = part.split(' ');
+			this.statusCode = parseInt(line[1]);
+		} else {
+
+			var headerParts = part.split(': ');
+			if (headerParts.length == 2) {
+				var key = decodeURIComponent(headerParts[0]).toLowerCase();
+				var val = decodeURIComponent(headerParts[1]);
+				var current = this.headers[key];
+				var cookie = key == 'set-cookie';
+				
+				if (!current) {
+					this.headers[key] = cookie ? [ val ] : val;
+				} else if (typeof current == 'string') {
+					this.headers[key] = [ current, val ];
+				} else {
+					current.push(val);
+				}
+			}
+		}
+	}
+}
+
+/*==========================================*
+/* HTTP Request
+/*==========================================*/
+
 HTTP.prototype.request = function(method, urlString, data, headers, next) {
 	next = next || function(){};
 	data = data || {};
 	headers = headers || {};
 
+	var _this = this;
 	var urlParts = url.parse(urlString)
 	var host = urlParts.host;
 	var path = urlParts.pathname;
@@ -65,52 +145,53 @@ HTTP.prototype.request = function(method, urlString, data, headers, next) {
 
 	var options = {
 		host: host,
-		path: path,
-		method: method,
-		headers: headers,
 		port: 80
 	};
 
-	var request = http.request(options, function(res){
+	var socket = net.connect(options, function(){
 
-		var body = '';
+		// build request
+		var req = '';
+		
+		// initial line
+		req += _this.initialLine(method, path);
 
-		res.on('data', function (chunk) {
-		    body += chunk;
-		});
+		// header lines
+		var keys = Object.keys(headers);
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			var val = headers[key];
+			req += key + ': ' + val + LINE_ENDING;
+		}
 
-		res.on('end', function(){
-		    next(null, res, body.toString('utf8'));
-		});
+		// blank line
+		req += LINE_ENDING;
 
-		res.on('error', function(err){
-			next(err, res, null);
-		});
+		// request body
+		if (!isURLData) {
+			req += dataString;
+		}
+
+		socket.write(req);
 	});
 
-	if (!isURLData) {
-		request.write(dataString);
-	}
+	var res = '';
 
-	request.end();
+	socket.on('data', function(data){
+		var text = data.toString('utf8');
+		res += text;
+	});
 
-	return request;
-};
+	socket.on('close', function(){
+		var response = new Response(res);
+		next(null, response, response.body);
+	});
 
-HTTP.prototype.get = function(url, params, headers, next) {
-	return this.request(METHODS.GET, url, params, headers, next);
-};
+	socket.on('error', function(err){
+		next(err);
+	});
 
-HTTP.prototype.post = function(url, body, headers, next) {
-	return this.request(METHODS.POST, url, body, headers, next);
-};
-
-HTTP.prototype.put = function(url, body, headers, next) {
-	return this.request(METHODS.PUT, url, body, headers, next);
-};
-
-HTTP.prototype.delete = function(url, params, headers, next) {
-	return this.request(METHODS.DELETE, url, params, headers, next);
+	return socket;
 };
 
 module.exports = new HTTP();
