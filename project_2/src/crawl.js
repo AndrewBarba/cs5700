@@ -19,7 +19,7 @@ var net   = require('net')
 
 var USER_NAME = process.argv[2];
 var PASSWORD = process.argv[3];
-var MAX_SECRETS = 5;
+var MAX_SECRETS = process.argv[4] || 5;
 
 /*==========================================*
 /* Crawler
@@ -42,8 +42,11 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 		_.each(urls, function(url){
 			if (HISTORY[url]) return;
 			HISTORY[url] = true;
+			
 			console.log(url);
+			
 			fb.crawl(url, function(err, res, body){
+				
 				// grab any secrets that may have been on the page
 				var secrets = fb.parseSecrets(body);
 				SECRETS = _.union(SECRETS, secrets);
