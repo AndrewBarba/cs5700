@@ -85,10 +85,6 @@ function Response(res) {
 
 	var parts = res.split(LINE_ENDING);
 
-	if (!parts.length <= 1) {
-		console.log(res);
-	}
-
 	// set headers
 	this.headers = {};
 
@@ -190,13 +186,11 @@ HTTP.prototype.request = function(method, urlString, data, headers, next) {
 	});
 
 	socket.on('close', function(){
-		_this.connections--;
 		var response = new Response(res.toString('utf8'));
 		next(null, response, response.body);
 	});
 
 	socket.on('error', function(err){
-		console.log(err);
 		_this.connections--;
 		next(err);
 	});
