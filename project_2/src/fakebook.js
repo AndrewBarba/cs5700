@@ -135,10 +135,7 @@ Fakebook.prototype.get = function(endpoint, params, next) {
 	var url = this.httpUrl(endpoint);
 	var headers = this.defaultHeaders();
 
-	console.log(url);
 	http.get(url, params, headers, function(err, res, body){
-		console.log(url);
-
 		if (err) return next(err);
 
 		// import cookies

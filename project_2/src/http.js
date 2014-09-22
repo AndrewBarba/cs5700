@@ -196,8 +196,6 @@ HTTP.prototype.request = function(method, url, data, headers, next) {
 		next(err);
 	});
 
-	console.debug(url);
-
 	return socket;
 };
 
