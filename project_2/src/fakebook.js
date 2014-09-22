@@ -143,19 +143,19 @@ Fakebook.prototype.get = function(endpoint, params, next) {
 
 		// retry the request if it fails
 		if (res.statusCode >= 500) {
-			console.debug('500: ' + url);
+			console.debug('GET 500: ' + endpoint + ' - ' + url);
 			return _this.get(endpoint, params, next);
 		};
 
 		// abandon request
 		if (res.statusCode >= 400) {
-			console.debug('400: ' + url);
+			console.debug('GET 400: ' + endpoint + ' - ' + url);
 			return next(new Error('Not Found'));
 		};
 
 		// handle redirect
 		if (res.statusCode == 301 || res.statusCode == 302) {
-			console.debug('300: ' + url);
+			console.debug('GET 300: ' + endpoint + ' - ' + url);
 			var url = res.headers.location;
 			var headers = _this.defaultHeaders();
 			return http.get(url, {}, headers, next);
@@ -183,19 +183,19 @@ Fakebook.prototype.post = function(endpoint, data, next) {
 
 		// retry the request if it fails
 		if (res.statusCode >= 500) {
-			console.debug('500: ' + url);
+			console.debug('POST 500: ' + endpoint + ' - ' + url);
 			return _this.post(endpoint, data, next);
 		};
 
 		// abandon request
 		if (res.statusCode >= 400) {
-			console.debug('400: ' + url);
+			console.debug('POST 400: ' + endpoint + ' - ' + url);
 			return next(new Error('Not Found'));
 		};
 
 		// handle redirect
 		if (res.statusCode == 301 || res.statusCode == 302) {
-			console.debug('300: ' + url);
+			console.debug('POST 300: ' + endpoint + ' - ' + url);
 			var url = res.headers.location;
 			var headers = _this.defaultHeaders();
 			return http.get(url, {}, headers, next);
