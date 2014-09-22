@@ -20,6 +20,7 @@ var net   = require('net')
 var USER_NAME = process.argv[2];
 var PASSWORD = process.argv[3];
 var MAX_SECRETS = process.argv[4] || 5;
+var CONCURRENCY = process.argv[5] || 10;
 
 /*==========================================*
 /* Crawler
@@ -39,7 +40,7 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 			process.exit();
 		}
 
-		_.each(urls, function(url){
+		async.eachLimit(urls, CONCURRENCY, function(url){
 			if (HISTORY[url]) return;
 			HISTORY[url] = true;
 			
