@@ -40,12 +40,12 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 			process.exit();
 		}
 
-		async.eachLimit(urls, CONCURRENCY, function(url){
-			if (HISTORY[url]) return;
+		async.eachLimit(urls, CONCURRENCY, function(url, next){
+			if (HISTORY[url]) return next();
 			HISTORY[url] = true;
 			
 			console.log(url);
-			
+
 			fb.crawl(url, function(err, res, body){
 				if (err) return;
 
@@ -56,6 +56,8 @@ fb.login(USER_NAME, PASSWORD, function(err, res, body){
 				// gather uncrawled links
 				var links = fb.parseLinks(body);
 				crawl(links);
+
+				next();
 			});
 		});
 
