@@ -125,13 +125,13 @@ function Response(res) {
 /* HTTP Request
 /*==========================================*/
 
-HTTP.prototype.request = function(method, urlString, data, headers, next) {
+HTTP.prototype.request = function(method, url, data, headers, next) {
 	next = next || function(){};
 	data = data || {};
 	headers = headers || {};
 
 	var _this = this;
-	var urlParts = liburl.parse(urlString);
+	var urlParts = liburl.parse(url);
 	var host = urlParts.host;
 	var path = urlParts.pathname;
 	var dataString = this.dataString(data);
@@ -195,6 +195,8 @@ HTTP.prototype.request = function(method, urlString, data, headers, next) {
 		_this.connections--;
 		next(err);
 	});
+
+	console.debug(url);
 
 	return socket;
 };
