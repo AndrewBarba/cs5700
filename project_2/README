@@ -3,6 +3,20 @@ Andrew Barba
 https://github.com/AndrewBarba/cs5700
 -------------------------------------
 
+#### Dependencies ####
+
+Async.js
+--------
+source: https://www.npmjs.org/package/async
+reason: Node.js module for handling asynchronous control flow
+
+Underscore
+----------
+source: https://www.npmjs.org/package/underscore
+reason: Non-intrusive JavaScript utility functions 
+
+#### Summary ####
+
 I began this project by visiting the Fakebook site on my desktop with the 
 Google Chrome browser. After quickly testing my logging in and clicking around
 I began inspecting network calls via the Chrome Developer Tools. There's really
