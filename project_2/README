@@ -10,8 +10,8 @@ Async.js
 source: https://www.npmjs.org/package/async
 reason: Node.js module for handling asynchronous control flow
 
-Underscore
-----------
+Underscore.js
+-------------
 source: https://www.npmjs.org/package/underscore
 reason: Non-intrusive JavaScript utility functions 
 
