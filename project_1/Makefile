@@ -6,3 +6,6 @@ tcp:
 
 tls:
 	./client -s cs5700f14.ccs.neu.edu 000546770
+
+grade:
+	/course/cs5700f14/bin/gradesheet
