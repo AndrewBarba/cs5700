@@ -88,12 +88,13 @@ Fakebook.prototype.parseLinks = function(html) {
  * found in a given string of html
  */
 Fakebook.prototype.parseSecrets = function(html) {
-	var re = /[a-zA-Z0-9]{64}/gi;
+	var re = /<h2.*secret_flag.*[a-zA-Z0-9]{64}.*h2>/gi;
 	var matches = html.match(re) || [];
 	var secrets = [];
 	for (var i = 0; i < matches.length; i++) {
 		var match = matches[i];
-		secrets.push(match);
+		var secrets = match.match(/[a-zA-Z0-9]{64}/gi) || [];
+		secrets.push(secrets.pop());
 	}
 	return secrets;
 };
