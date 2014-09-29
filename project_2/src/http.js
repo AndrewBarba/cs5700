@@ -199,7 +199,8 @@ function Request(method, url, data, headers) {
 		if (isURLData) {
 			path = path + '?' + dataString;
 		} else {
-			headers['Content-Length'] = encodeURI(dataString).split(/%..|./).length - 1;
+			var length = unescape(encodeURIComponent(dataString)).length;
+			headers['Content-Length'] = length;
 			headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
 
