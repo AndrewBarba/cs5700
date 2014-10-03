@@ -1,2 +1,2 @@
 #!/bin/bash
-node ./src/crawl-concurrent.js "$@"
+node ./src_node/crawl-concurrent.js "$@"

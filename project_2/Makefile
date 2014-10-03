@@ -1,8 +1,11 @@
 default:
 	chmod +x ./webcrawler
 
-crawler:
+andrew:
 	./webcrawler 000546770  IT40Y3BI
+
+gary:
+	./webcrawler 000507111  1H23Y6KA
 
 grade:
 	/course/cs5700f14/bin/gradesheet

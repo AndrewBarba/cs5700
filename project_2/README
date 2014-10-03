@@ -1,5 +1,5 @@
-Andrew Barba
-000546770
+Andrew Barba | Gary Soeller
+000546770    | 000507111 
 https://github.com/AndrewBarba/cs5700
 -------------------------------------
 
@@ -17,33 +17,19 @@ reason: Non-intrusive JavaScript utility functions
 
 #### Summary ####
 
-I began this project by visiting the Fakebook site on my desktop with the 
-Google Chrome browser. After quickly testing my logging in and clicking around
-I began inspecting network calls via the Chrome Developer Tools. There's really
+We began this project by visiting the Fakebook site on a desktop with the 
+Google Chrome browser. After quickly testing our login and clicking around
+We began inspecting network calls via the Chrome Developer Tools. There's really
 no need to inspect Javascript or HTML as our project is strictly making network
-calls. After learning some of the requests that were being sent I began deleting
+calls. After learning some of the requests that were being sent we began deleting
 cookies and refreshing the page to see how the server was handling them. It 
 became clear that cookies were the main way of persisting a login throughout 
 the site. 
 
-With a decent understanding of how the site works, I began writing a Fakebook
-client implementation in Node.js. I began the project using the built in http
-module, but, since there was a chance it could be forbidden for this project,
-I abstracted one layer out to make swapping out the built in module for a custom
-one as easy as possible. Getting login working was by far the most difficult
-piece of this assignment. Once login was working the rest of the project quickly
-fell into place. I eventually had a working solution using the built in http
-module, a bare bones Fakebook SDK and a simple synchronous crawler.
-
-I eventually found out the the http module would not be allowed for this
-project. This forced me to read the "HTTP Made Simple" guide in order to really
-understand how the protocol works. I was shocked by how simple it was. The TCP
-implementation was certainly more complicated than the raw http module but not
-by much considering I only implemented the 1.0 spec and not 1.1. 
-
-With the TCP implementation working, I began working on a concurrent version of
-the crawler. The concurrent version showed poor results. Often times I would
-reach the open socket limit and many times it just was not any faster than the
-synchronous version. I expected to reach a socket limit but was suprised that
-it was not any faster. I'm not entirely sure how the server chooses when to
-deliver secrets to clients so the concurrency may actually be irrevelant here.
+With a decent understanding of how the site works, we began building two 
+solutions to the project, one written in Node.js and one written and Java. This 
+let the both us learn each other's coding styles and explore a new language
+through the eye's of someone who is profecient in that language. One of us was
+well versed in Node.js and the other was well versed in Java. By understanding 
+two solutions we feel we were able to experiment and explore performance, code
+quality, and readibility in a relatively simple and straight forward project. 
