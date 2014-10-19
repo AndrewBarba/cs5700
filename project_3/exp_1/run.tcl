@@ -2,7 +2,7 @@
 set ns [new Simulator]
 
 #Open the trace file (before you start the experiment!)
-set tf [open trace.tr w]
+set tf [open ./exp_1/trace.tr w]
 $ns trace-all $tf
 
 #Define different colors for data flows (for NAM)
