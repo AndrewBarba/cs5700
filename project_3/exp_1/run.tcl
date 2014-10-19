@@ -5,17 +5,9 @@ set ns [new Simulator]
 set tf [open trace.tr w]
 $ns trace-all $tf
 
-
-#Create a simulator object
-set ns [new Simulator]
-
 #Define different colors for data flows (for NAM)
 $ns color 1 Blue
 $ns color 2 Red
-
-#Open the NAM trace file
-set nf [open out.nam w]
-$ns namtrace-all $nf
 
 #Define a 'finish' procedure
 proc finish {} {
