@@ -88,7 +88,7 @@ $ns connect $tcp $sink
 # Schedule events for the CBR and FTP agents
 $ns at 0.1 "$cbr start"
 #$ns at 1.0 "$tcp start"
-#$ns at 9.0 "$tcp stop"
+$ns at 9.0 "$tcp stop"
 $ns at 9.5 "$cbr stop"
 
 # Call the finish procedure after 5 seconds of simulation time
