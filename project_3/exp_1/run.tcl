@@ -11,7 +11,7 @@ $ns color 2 Red
 
 #Define a 'finish' procedure
 proc finish {} {
-        global ns nf
+        global ns nf tf
         
         # Close the trace file (after you finish the experiment!)
         close $tf
