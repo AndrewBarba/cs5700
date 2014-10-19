@@ -82,7 +82,10 @@ $ns connect $udp $null
 ################################################################################
 
 # Add TCP agent to node 1
-set tcp [new Agent/TCP/Reno]
+set tcp [new Agent/TCP/Tahoe]
+# set tcp [new Agent/TCP/Reno]
+# set tcp [new Agent/TCP/NewReno]
+# set tcp [new Agent/TCP/Vegas]
 $ns attach-agent $n1 $tcp
 
 # Add TCP sink to node 4
