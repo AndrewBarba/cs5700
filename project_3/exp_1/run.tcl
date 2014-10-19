@@ -52,7 +52,7 @@ $ns attach-agent $n2 $udp
 # Attach CBR to UDP at node 2
 set cbr [new Application/Traffic/CBR]
 $cbr set packetSize_ 500
-$cbr set rate_ 1mb
+$cbr set interval_ 0.005
 $cbr attach-agent $udp
 
 # Add sink at node 3 
@@ -86,13 +86,14 @@ $ns connect $tcp $sink
 ################################################################################
 
 # Schedule events for the CBR and FTP agents
-$ns at 0.1 "$cbr start"
-$ns at 1.0 "$tcp start"
-$ns at 9.0 "$tcp stop"
-$ns at 9.5 "$cbr stop"
+#$ns at 0.1 "$cbr start"
+#$ns at 1.0 "$tcp start"
+#$ns at 9.0 "$tcp stop"
+#$ns at 9.5 "$cbr stop"
 
 # Call the finish procedure after 5 seconds of simulation time
 $ns at 10.0 "finish"
 
 #Run the simulation
 $ns run
+
