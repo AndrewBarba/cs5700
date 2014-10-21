@@ -1,6 +1,18 @@
 # Experiment 1
 
-proc experiment_one {agent cbr_rate} {
+proc get_agent {agent} {
+  if {$agent == "tahoe"} {
+    return [new Agent/TCP]
+  } elseif {$agent == "reno"} {
+    return [new Agent/TCP/Reno]
+  } elseif {$agent == "newreno"} {
+    return [new Agent/TCP/Newreno]
+  } elseif {$agent == "vegas"} {
+    return [new Agent/TCP/Vegas]
+  }
+}
+
+proc experiment_one {ax ay cbr_rate} {
 
   set local 1
 
@@ -8,15 +20,9 @@ proc experiment_one {agent cbr_rate} {
   set ns [new Simulator]
   set CBR_RATE $cbr_rate
 
-  if {$agent == "tahoe"} {
-    set tcp [new Agent/TCP]
-  } elseif {$agent == "reno"} {
-    set tcp [new Agent/TCP/Reno]
-  } elseif {$agent == "newreno"} {
-    set tcp [new Agent/TCP/Newreno]
-  } elseif {$agent == "vegas"} {
-    set tcp [new Agent/TCP/Vegas]
-  }
+  # tcp
+  set tcpx get_agent $ax 
+  set tcpy get_agent $ay 
 
   # io
   global tf
@@ -64,18 +70,18 @@ proc experiment_one {agent cbr_rate} {
   
   # Add a single TCP stream from N1 to a sink at N4
   
-  $ns attach-agent $n1 $tcp
+  $ns attach-agent $n1 $tcpx
   
   # Add TCP sink to node 4
   set sink [new Agent/TCPSink]
   $ns attach-agent $n4 $sink
   
   # Send data from node 1 to node 4
-  $ns connect $tcp $sink
+  $ns connect $tcpx $sink
   
   # Run FTP application
   set ftp [new Application/FTP]
-  $ftp attach-agent $tcp
+  $ftp attach-agent $tcpx
   
   # Simulation
   
