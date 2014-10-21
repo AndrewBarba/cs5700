@@ -80,22 +80,39 @@ proc experiment_one {ax ay cbr_rate} {
   $ns attach-agent $n1 $tcpx
   
   # Add TCP sink to node 4
-  set sink [new Agent/TCPSink]
-  $ns attach-agent $n4 $sink
+  set sinkx [new Agent/TCPSink]
+  $ns attach-agent $n4 $sinkx
   
   # Send data from node 1 to node 4
-  $ns connect $tcpx $sink
+  $ns connect $tcpx $sinkx
   
   # Run FTP application
-  set ftp [new Application/FTP]
-  $ftp attach-agent $tcpx
+  set ftpx [new Application/FTP]
+  $ftpx attach-agent $tcpx
+
+  # Add a single TCP stream from N1 to a sink at N4
+  
+  $ns attach-agent $n5 $tcpy
+  
+  # Add TCP sink to node 4
+  set sinky [new Agent/TCPSink]
+  $ns attach-agent $n6 $sinky
+  
+  # Send data from node 1 to node 4
+  $ns connect $tcpy $sinky
+  
+  # Run FTP application
+  set ftpy [new Application/FTP]
+  $ftpy attach-agent $tcpy
   
   # Simulation
   
   # Schedule events for the CBR and FTP agents
   $ns at 0.1 "$cbr start"
-  $ns at 1.0 "$ftp start"
-  $ns at 9.0 "$ftp stop"
+  $ns at 1.0 "$ftpx start"
+  $ns at 1.1 "$ftpy start"
+  $ns at 9.0 "$ftpx stop"
+  $ns at 9.0 "$ftpy stop"
   $ns at 9.9 "$cbr stop"
   
   # Call the finish procedure after 5 seconds of simulation time
