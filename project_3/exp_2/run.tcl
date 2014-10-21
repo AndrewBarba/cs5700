@@ -98,4 +98,4 @@ proc experiment_one {ax ay cbr_rate} {
   $ns run
 }
 
-experiment_one [lindex $argv 0] [lindex $argv 1]
+experiment_one [lindex $argv 0] [lindex $argv 1] [lindex $argv 2]
