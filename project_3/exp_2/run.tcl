@@ -1,4 +1,4 @@
-# Experiment 1
+# Experiment 2
 
 proc experiment_one {ax ay cbr_rate} {
   global tcpx tcpy
@@ -90,7 +90,7 @@ proc experiment_one {ax ay cbr_rate} {
   set ftpx [new Application/FTP]
   $ftpx attach-agent $tcpx
 
-  # Add a single TCP stream from N1 to a sink at N4
+  # Add a single TCP stream from N5 to a sink at N6
   
   $ns attach-agent $n5 $tcpy
   
