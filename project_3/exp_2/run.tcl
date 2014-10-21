@@ -1,18 +1,7 @@
 # Experiment 1
 
-proc get_agent {agent} {
-  if {$agent == "tahoe"} {
-    return [new Agent/TCP]
-  } elseif {$agent == "reno"} {
-    return [new Agent/TCP/Reno]
-  } elseif {$agent == "newreno"} {
-    return [new Agent/TCP/Newreno]
-  } elseif {$agent == "vegas"} {
-    return [new Agent/TCP/Vegas]
-  }
-}
-
 proc experiment_one {ax ay cbr_rate} {
+  global tcpx tcpy
 
   set local 1
 
@@ -20,13 +9,31 @@ proc experiment_one {ax ay cbr_rate} {
   set ns [new Simulator]
   set CBR_RATE $cbr_rate
 
-  # tcp
-  set tcpx get_agent $ax 
-  set tcpy get_agent $ay 
+  # tcp x
+  if {$ax == "tahoe"} {
+    set tcpx [new Agent/TCP]
+  } elseif {$ax == "reno"} {
+    set tcpx [new Agent/TCP/Reno]
+  } elseif {$ax == "newreno"} {
+    set tcpx [new Agent/TCP/Newreno]
+  } elseif {$ax == "vegas"} {
+    set tcpx [new Agent/TCP/Vegas]
+  }
+
+  #tcp y
+  if {$ay == "tahoe"} {
+    set tcpy [new Agent/TCP]
+  } elseif {$ay == "reno"} {
+    set tcpy [new Agent/TCP/Reno]
+  } elseif {$ay == "newreno"} {
+    set tcpy [new Agent/TCP/Newreno]
+  } elseif {$ay == "vegas"} {
+    set tcpy [new Agent/TCP/Vegas]
+  }
 
   # io
   global tf
-  set tf [open ./logs/exp1-$CBR_RATE-$agent.tr w]
+  set tf [open ./logs/exp1-$CBR_RATE-$ax-$ay.tr w]
   $ns trace-all $tf
 
   proc finish {} {
