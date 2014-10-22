@@ -46,7 +46,7 @@ proc experiment_one {agent discipline} {
   $ns duplex-link $n3 $n4 10Mb 10ms $discipline
   $ns duplex-link $n3 $n6 10Mb 10ms $discipline
   
-  # Add a CBR source at N2 and a sink at N3
+  # Add a CBR source at N5 and a sink at N6
   
   # Create UDP agent at node 5
   set udp [new Agent/UDP]
@@ -83,12 +83,12 @@ proc experiment_one {agent discipline} {
   
   # Schedule events for the CBR and FTP agents
   $ns at 0.1 "$ftp start"
-  $ns at 10.0 "$cbr start"
-  $ns at 19.0 "$ftp stop"
-  $ns at 19.9 "$cbr stop"
+  $ns at 5.0 "$cbr start"
+  $ns at 9.0 "$ftp stop"
+  $ns at 9.9 "$cbr stop"
   
   # Call the finish procedure after 5 seconds of simulation time
-  $ns at 20.0 "finish"
+  $ns at 10.0 "finish"
   
   #Run the simulation
   $ns run
