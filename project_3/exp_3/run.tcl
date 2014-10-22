@@ -17,7 +17,7 @@ proc experiment_one {agent discipline} {
   } elseif {$agent == "vegas"} {
     set tcp [new Agent/TCP/Vegas]
   } elseif {$agent == "sack"} {
-    set tcp [new Agent/TCP/Sack]
+    set tcp [new Agent/TCP/Sack1]
   }
 
   # io
