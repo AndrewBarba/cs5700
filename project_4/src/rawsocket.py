@@ -139,6 +139,7 @@ class RawSocket():
 
 	def __init__(self):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
+		self.socket.bind(("0.0.0.0", 0))
 
 def rawsocket():
 	return RawSocket()
