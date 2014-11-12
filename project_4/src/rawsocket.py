@@ -105,7 +105,7 @@ class Packet():
 class RawSocket():
 
 	def connect(self, domain, port):
-		print "connecting to %s ..." % domain
+		print "connecting to %s" % domain
 
 		# set ip and port number
 		self.ip = socket.gethostbyname(domain)
@@ -149,7 +149,7 @@ class RawSocket():
 
 	def __init__(self):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
-		self.socket.bind(("0.0.0.0", 0))
+		#self.socket.bind(("0.0.0.0", 0))
 
 def rawsocket():
 	return RawSocket()
