@@ -93,6 +93,12 @@ class Packet():
 	def __init__(self, ip, data=''):
 		self.ip = ip
 		self.data = data
+		self.tcp_fin = 0
+		self.tcp_syn = 0
+		self.tcp_rst = 0
+		self.tcp_psh = 0
+		self.tcp_ack = 0
+		self.tcp_urg = 0
 
 
 class RawSocket():
@@ -108,7 +114,7 @@ class RawSocket():
 		self.socket.sendto(syn.packet(), (self.ip, 0))
 
 		# receive syn/ack
-		synack = self.recvfrom(65565)
+		synack = self.socket.recvfrom(65565)
 		print synack
 
 		# send ack
