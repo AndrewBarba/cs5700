@@ -2,7 +2,7 @@
 import socket, sys
 from struct import *
 
-class Packet():
+class PacketOut():
 
 	def checksum(self, msg):
 		s = 0
@@ -101,11 +101,13 @@ class RawSocket():
 		return self.ip
 
 	def send(self, data):
-		packet = Packet(self.ip, data)
+		packet = PacketOut(self.ip, data)
 		return self.socket.sendto(packet.packet, (self.ip, 0))
 
 	def recv(self, bytes=64):
-		return self.socket.recv(bytes)
+		d = self.socket.recvfrom(bytes)
+		print d
+		return d
 
 	def close(self):
 		return self.socket.close()
