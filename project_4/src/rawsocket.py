@@ -18,10 +18,9 @@ class RawSocket():
 		return self.socket.close()
 
 	def __init__(self):
-		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_IP)
+		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
 		host = socket.gethostbyname(socket.gethostname())
-		self.socket.bind((host, 0))
-		self.socket.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
+		self.socket.bind(("eth0", 0))
 
 def rawsocket():
 	return RawSocket()

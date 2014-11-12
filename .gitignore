@@ -1,3 +1,5 @@
 *.log
 ns2
 .nam
+*.pyc
+pcap
