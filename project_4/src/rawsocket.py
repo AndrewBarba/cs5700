@@ -81,7 +81,7 @@ class Packet():
 		psh = pack('!4s4sBBH' , source_address , dest_address , placeholder , protocol , tcp_length);
 		psh = psh + tcp_header + user_data;
 		 
-		tcp_check = checksum(psh)
+		tcp_check = self.checksum(psh)
 		#print tcp_checksum
 		 
 		# make the tcp header again and fill the correct checksum - remember checksum is NOT in network byte order
