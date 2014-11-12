@@ -2,7 +2,7 @@
 import socket, sys
 from struct import *
 
-class PacketOut():
+class Packet():
 
 	def checksum(self, msg):
 		s = 0
@@ -20,12 +20,9 @@ class PacketOut():
 		 
 		return s
 
-	def __init__(self, ip, data):
-
-		# now start constructing the packet
-		packet = '';
-		 
-		source_ip = '192.168.1.101'
+	def ip_header(self):
+		ip = self.ip
+		source_ip = '104.236.53.85'
 		dest_ip = ip # or socket.gethostbyname('www.google.com')
 		 
 		# ip header fields
@@ -44,8 +41,9 @@ class PacketOut():
 		ip_ihl_ver = (ip_ver << 4) + ip_ihl
 		 
 		# the ! in the pack format string means network order
-		ip_header = pack('!BBHHHBBH4s4s' , ip_ihl_ver, ip_tos, ip_tot_len, ip_id, ip_frag_off, ip_ttl, ip_proto, ip_check, ip_saddr, ip_daddr)
-		 
+		return pack('!BBHHHBBH4s4s' , ip_ihl_ver, ip_tos, ip_tot_len, ip_id, ip_frag_off, ip_ttl, ip_proto, ip_check, ip_saddr, ip_daddr)
+
+	def tcp_header(self, check=0):
 		# tcp header fields
 		tcp_source = 1234   # source port
 		tcp_dest = 80   # destination port
@@ -53,25 +51,29 @@ class PacketOut():
 		tcp_ack_seq = 0
 		tcp_doff = 5    #4 bit field, size of tcp header, 5 * 4 = 20 bytes
 		#tcp flags
-		tcp_fin = 0
-		tcp_syn = 1
-		tcp_rst = 0
-		tcp_psh = 0
-		tcp_ack = 0
-		tcp_urg = 0
+		tcp_fin = self.tcp_fin
+		tcp_syn = self.tcp_syn
+		tcp_rst = self.tcp_rst
+		tcp_psh = self.tcp_psh
+		tcp_ack = self.tcp_ack
+		tcp_urg = self.tcp_urg
 		tcp_window = socket.htons (5840)    #   maximum allowed window size
-		tcp_check = 0
+		tcp_check = check
 		tcp_urg_ptr = 0
 		 
 		tcp_offset_res = (tcp_doff << 4) + 0
 		tcp_flags = tcp_fin + (tcp_syn << 1) + (tcp_rst << 2) + (tcp_psh <<3) + (tcp_ack << 4) + (tcp_urg << 5)
 		 
 		# the ! in the pack format string means network order
-		tcp_header = pack('!HHLLBBHHH' , tcp_source, tcp_dest, tcp_seq, tcp_ack_seq, tcp_offset_res, tcp_flags,  tcp_window, tcp_check, tcp_urg_ptr)
-		 
-		user_data = data
-		 
+		if check != 0:
+			pack('!HHLLBBH' , tcp_source, tcp_dest, tcp_seq, tcp_ack_seq, tcp_offset_res, tcp_flags,  tcp_window) + pack('H' , tcp_check) + pack('!H' , tcp_urg_ptr)
+		else:
+			return pack('!HHLLBBHHH' , tcp_source, tcp_dest, tcp_seq, tcp_ack_seq, tcp_offset_res, tcp_flags,  tcp_window, tcp_check, tcp_urg_ptr)
+
+	def psh(self):
 		# pseudo header fields
+		tcp_header = self.tcp_header()
+		user_data = self.data
 		source_address = socket.inet_aton( source_ip )
 		dest_address = socket.inet_aton(dest_ip)
 		placeholder = 0
@@ -79,33 +81,48 @@ class PacketOut():
 		tcp_length = len(tcp_header) + len(user_data)
 		 
 		psh = pack('!4s4sBBH' , source_address , dest_address , placeholder , protocol , tcp_length);
-		psh = psh + tcp_header + user_data;
-		 
-		tcp_check = 0 #self.checksum(psh)
-		#print tcp_checksum
-		 
-		# make the tcp header again and fill the correct checksum - remember checksum is NOT in network byte order
-		tcp_header = pack('!HHLLBBH' , tcp_source, tcp_dest, tcp_seq, tcp_ack_seq, tcp_offset_res, tcp_flags,  tcp_window) + pack('H' , tcp_check) + pack('!H' , tcp_urg_ptr)
-		 
-		# final full packet - syn packets dont have any data
-		packet = ip_header + tcp_header + user_data
+		return psh + tcp_header + self.data;
 
-		self.packet = packet
+	def packet(self):
+		ip_header = self.ip_header()
+		psh = self.psh()
+		tcp_check = self.checksum(psh)
+		tcp_header = self.tcp_header(tcp_check)
+		return ip_header + tcp_header + self.data
+
+	def __init__(self, ip, data=''):
+		self.ip = ip
+		self.data = data
 
 
 class RawSocket():
 
 	def connect(self, domain, port):
+		# set ip and port number
 		self.ip = socket.gethostbyname(domain)
 		self.port = port
+
+		# send syn
+		syn = Packet(self.ip)
+		syn.tcp_syn = 1
+		self.socket.sendto(syn.packet(), (self.ip, 0))
+
+		# receive syn/ack
+		synack = self.recvfrom(65565)
+		print synack
+
+		# send ack
+		ack = Packet(self.ip)
+		ack.tcp_ack = 1
+		self.socket.sendto(ack.packet(), (self.ip, 0))
+
 		return self.ip
 
 	def send(self, data):
-		packet = PacketOut(self.ip, data)
-		print packet
-		return self.socket.sendto(packet.packet, (self.ip, 0))
+		packet = Packet(self.ip, data)
+		return self.socket.sendto(packet.packet(), (self.ip, 0))
 
-	def recv(self, bytes=64):
+	def recv(self, bytes=65565):
 		d = self.socket.recvfrom(bytes)
 		print d
 		return d
@@ -114,8 +131,7 @@ class RawSocket():
 		return self.socket.close()
 
 	def __init__(self):
-		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
-		self.socket.bind(("0.0.0.0", 0))
+		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
 
 def rawsocket():
 	return RawSocket()

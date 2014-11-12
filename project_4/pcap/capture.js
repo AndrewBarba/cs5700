@@ -32,9 +32,10 @@ pcap_session.findalldevs().forEach(function (dev) {
 });
 
 // Listen for packets, decode them, and feed the simple printer.  No tricks.
+var count = 0;
 pcap_session.on('packet', function (raw_packet) {
-    console.log(raw_packet);
+    count++;
     var packet = pcap.decode.packet(raw_packet);
-    console.log(packet);
+    if (count == 1) console.log(JSON.stringify(packet, null, 2));
     util.puts(pcap.print.packet(packet));
 });
