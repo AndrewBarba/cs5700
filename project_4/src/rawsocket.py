@@ -1,5 +1,6 @@
 
-import socket
+import socket, sys
+from struct import *
 
 class Packet():
 
