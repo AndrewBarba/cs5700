@@ -22,7 +22,7 @@ class Packet():
 
 	def ip_header(self):
 		ip = self.ip
-		source_ip = '104.236.53.85'
+		source_ip = self.source_ip
 		dest_ip = ip # or socket.gethostbyname('www.google.com')
 		 
 		# ip header fields
@@ -92,6 +92,7 @@ class Packet():
 
 	def __init__(self, ip, data=''):
 		self.ip = ip
+		self.source_ip = '104.236.53.85'
 		self.data = data
 		self.tcp_fin = 0
 		self.tcp_syn = 0
