@@ -121,7 +121,7 @@ class RawSocket():
 
 		# receive syn/ack
 		print "waiting for syn/ack"
-		synack = self.socket.recvfrom(65565)
+		synack = self.rsocket.recvfrom(65565)
 		print "received syn/ack"
 		print synack
 
@@ -149,7 +149,7 @@ class RawSocket():
 
 	def __init__(self):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
-		self.socket.bind(("104.236.53.85", 0))
+		self.rsocket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
 
 def rawsocket():
 	return RawSocket()
