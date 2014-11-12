@@ -105,24 +105,34 @@ class Packet():
 class RawSocket():
 
 	def connect(self, domain, port):
+		print "connecting to %s ..." % domain
+
 		# set ip and port number
 		self.ip = socket.gethostbyname(domain)
 		self.port = port
+		print "resolved ip: %s" % self.ip
 
 		# send syn
+		print "sending syn..."
 		syn = Packet(self.ip)
 		syn.tcp_syn = 1
 		self.socket.sendto(syn.packet(), (self.ip, 0))
+		print "syn sent."
 
 		# receive syn/ack
+		print "waiting for syn/ack"
 		synack = self.socket.recvfrom(65565)
+		print "received syn/ack"
 		print synack
 
 		# send ack
+		print "sending ack"
 		ack = Packet(self.ip)
 		ack.tcp_ack = 1
 		self.socket.sendto(ack.packet(), (self.ip, 0))
+		print "sent ack"
 
+		print "connected."
 		return self.ip
 
 	def send(self, data):
