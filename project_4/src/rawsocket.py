@@ -4,8 +4,8 @@ from struct import *
 
 class InPacket():
 
-	def __init__(self):
-
+	def __init__(self, packet):
+		self.packet = packet
 
 class OutPacket():
 
