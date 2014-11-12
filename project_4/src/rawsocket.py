@@ -2,7 +2,12 @@
 import socket, sys
 from struct import *
 
-class Packet():
+class InPacket():
+
+	def __init__(self):
+
+
+class OutPacket():
 
 	def checksum(self, msg):
 		s = 0
@@ -114,7 +119,7 @@ class RawSocket():
 
 		# send syn
 		print "sending syn..."
-		syn = Packet(self.ip)
+		syn = OutPacket(self.ip)
 		syn.tcp_syn = 1
 		self.socket.sendto(syn.packet(), (self.ip, 0))
 		print "syn sent."
@@ -122,12 +127,14 @@ class RawSocket():
 		# receive syn/ack
 		print "waiting for syn/ack"
 		synack = self.rsocket.recvfrom(65565)
+		ip = synack[1][1]
+		print ip
 		print "received syn/ack"
 		print synack
 
 		# send ack
 		print "sending ack"
-		ack = Packet(self.ip)
+		ack = OutPacket(self.ip)
 		ack.tcp_ack = 1
 		self.socket.sendto(ack.packet(), (self.ip, 0))
 		print "sent ack"
@@ -136,7 +143,7 @@ class RawSocket():
 		return self.ip
 
 	def send(self, data):
-		packet = Packet(self.ip, data)
+		packet = OutPacket(self.ip, data)
 		return self.socket.sendto(packet.packet(), (self.ip, 0))
 
 	def recv(self, bytes=65565):
