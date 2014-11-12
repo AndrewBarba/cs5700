@@ -75,7 +75,7 @@ class Packet():
 		tcp_header = self.tcp_header()
 		user_data = self.data
 		source_address = socket.inet_aton( self.source_ip )
-		dest_address = socket.inet_aton(dest_ip)
+		dest_address = socket.inet_aton(self.ip)
 		placeholder = 0
 		protocol = socket.IPPROTO_TCP
 		tcp_length = len(tcp_header) + len(user_data)
