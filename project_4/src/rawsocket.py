@@ -102,6 +102,7 @@ class RawSocket():
 
 	def send(self, data):
 		packet = PacketOut(self.ip, data)
+		print packet
 		return self.socket.sendto(packet.packet, (self.ip, 0))
 
 	def recv(self, bytes=64):
