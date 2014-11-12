@@ -69,7 +69,7 @@ class PacketOut():
 		# the ! in the pack format string means network order
 		tcp_header = pack('!HHLLBBHHH' , tcp_source, tcp_dest, tcp_seq, tcp_ack_seq, tcp_offset_res, tcp_flags,  tcp_window, tcp_check, tcp_urg_ptr)
 		 
-		user_data = 'Hello, how are you'
+		user_data = data
 		 
 		# pseudo header fields
 		source_address = socket.inet_aton( source_ip )
