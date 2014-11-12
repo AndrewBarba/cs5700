@@ -4,7 +4,7 @@ from struct import *
 
 class Packet():
 
-	def checksum(msg):
+	def checksum(self, msg):
 		s = 0
 		 
 		# loop taking 2 characters at a time
