@@ -114,7 +114,7 @@ class OutPacket():
                     protocol,
                     total_length)
         psh = psh + tcp_header + self.payload
-        checksum = self.tcp_checksum(psh)
+        tcp_checksum = self.checksum(psh)
         tcp_header = struct.pack("!HHLLBBH",
                             self.tcp_srcp,
                             self.tcp_dstp,
@@ -123,7 +123,7 @@ class OutPacket():
                             data_offset,
                             flags,
                             self.tcp_window)
-        tcp_header += struct.pack('H', checksum)
+        tcp_header += struct.pack('H', tcp_checksum)
         tcp_header += struct.pack('!H', self.tcp_urgp)
         return tcp_header
 
@@ -148,7 +148,7 @@ class OutPacket():
         self.tcp_flg_syn = 0
         self.tcp_flg_fin = 0
         self.tcp_window = socket.htons(5840)
-        self.tcp_checksum = 0
+        self.checksum = 0
         self.tcp_urgp = 0
 
         if len(data) % 2 == 1:
