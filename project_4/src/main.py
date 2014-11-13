@@ -37,6 +37,4 @@ def writefile(data, path):
 data = http.get(URL)
 
 # Write data to file
-# writefile(data, getpath(URL))
-
-print data
+writefile(data, getpath(URL))
