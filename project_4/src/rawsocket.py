@@ -145,8 +145,8 @@ class RawSocket():
 		self.socket.sendto(ack.packet(), (self.ip, 0))
 
 	def send(self, data):
-		packet = OutPacket(self.ip, data)
-		return self.socket.sendto(packet.packet(), (self.ip, 0))
+		#packet = OutPacket(self.ip, data)
+		#return self.socket.sendto(packet.packet(), (self.ip, 0))
 
 	def recv_next(self, bytes=65565):
 		while True:
@@ -157,12 +157,13 @@ class RawSocket():
 				
 
 	def recv(self, bytes=65565):
-		d = self.socket.recvfrom(bytes)
-		print d
-		return d
+		while True:
+			data = self.recv_next()
+			packet = InPacket(data)
+			self.send_ack()
 
 	def close(self):
-		return self.socket.close()
+		
 
 	def __init__(self):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
