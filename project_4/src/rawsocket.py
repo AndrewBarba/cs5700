@@ -124,7 +124,7 @@ class OutPacket():
                             flags,
                             self.tcp_window)
         tcp_header += struct.pack('H', tcp_checksum)
-        tcp_header += struct.pack('!H', self.tcp_:urgp)
+        tcp_header += struct.pack('!H', self.tcp_urgp)
         return tcp_header
 
     def packet(self):
