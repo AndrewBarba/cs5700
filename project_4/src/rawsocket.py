@@ -186,8 +186,8 @@ class RawSocket():
 
     def send(self, data):
         packet = OutPacket(self, data)
-        packet.ack = 1
-        packet.psh = 1
+        packet.tcp_flg_ack = 1
+        packet.tcp_flg_psh = 1
         self.socket.sendto(packet.packet(), (self.ip, 0))
         self.recv_next()
 
