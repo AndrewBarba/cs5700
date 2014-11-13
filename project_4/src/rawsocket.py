@@ -127,7 +127,7 @@ class RawSocket():
 		# receive syn/ack
 		print "waiting for syn/ack"
 		synack = False
-		while not synack
+		while not synack:
 			r = self.rsocket.recvfrom(65565)
 			ip = r[1][0]
 			if ip == self.ip:
