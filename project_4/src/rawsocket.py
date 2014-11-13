@@ -6,6 +6,44 @@ class InPacket():
 
 	def __init__(self, packet):
 		self.packet = packet
+		self.src_prt
+		self.dst_prt
+		self.seq_num
+		self.ack_num
+		self.offset
+		self.flags
+		self.flg_fin
+		self.flg_syn
+		self.flg_rst
+		self.flg_psh
+		self.flg_ack
+		self.flg_urg
+		self.window
+		self.chksum
+		self.urg_prt
+
+	def parse_header(self)
+		header = unpack('!HHLLBBHHH', self.packet[0:20])
+		self.src_prt = header[0]
+		self.dst_prt = header[1]
+		self.seq_num = header[2]
+		self.ack_num = header[3]
+		self.offset = header[4]
+		self.flags = header[5]
+		self.flg_fin = (self.flags & 1)
+		self.flg_syn = (self.flags & 2) >> 1
+		self.flg_rst = (self.flags & 4) >> 2
+		self.flg_psh = (self.flags & 8) >> 3
+		self.flg_ack = (self.flags & 16) >> 4
+		self.flg_urg = (self.flags & 32) >> 5
+		self.window = header[6]
+		self.chksum = header[7]
+		self.urg_prt = header[8]
+		return self
+
+
+
+
 
 class OutPacket():
 
