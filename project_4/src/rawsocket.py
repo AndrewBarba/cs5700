@@ -88,11 +88,11 @@ class OutPacket():
 
 	def tcp_header(self, check=0):
 		# tcp header fields
-		tcp_source = 1234   # source port
-		tcp_dest = 80   # destination port
-		tcp_seq = 454
-		tcp_ack_seq = 0
-		tcp_doff = 5    #4 bit field, size of tcp header, 5 * 4 = 20 bytes
+		tcp_source  = self.tcp_source  
+		tcp_dest    = self.tcp_dest    
+		tcp_seq     = self.tcp_seq     
+		tcp_ack_seq = self.tcp_ack_seq 
+		tcp_doff    = self.tcp_doff    
 		#tcp flags
 		tcp_fin = self.tcp_fin
 		tcp_syn = self.tcp_syn
@@ -137,6 +137,11 @@ class OutPacket():
 		self.ip = ip
 		self.source_ip = socket.gethostbyname(socket.gethostname())
 		self.data = data
+		self.tcp_source = 1234   # source port
+		self.tcp_dest = 80   # destination port
+		self.tcp_seq = 454
+		self.tcp_ack_seq = 0
+		self.tcp_doff = 5    #4 bit field, size of tcp header, 5 * 4 = 20 bytes
 		self.tcp_fin = 0
 		self.tcp_syn = 0
 		self.tcp_rst = 0
@@ -161,7 +166,7 @@ class RawSocket():
 		synack = self.recv_next()
 
 		# send ack
-		self.send_ack()
+		self.send_ack(1)
 
 		return self.ip
 
@@ -172,10 +177,11 @@ class RawSocket():
 		self.socket.sendto(syn.packet(), (self.ip, 0))
 		print "sent syn"
 
-	def send_ack(self):
+	def send_ack(self, seq):
 		print "sending ack"
 		ack = OutPacket(self.ip)
 		ack.tcp_ack = 1
+		self.tcp_ack_seq = seq
 		self.socket.sendto(ack.packet(), (self.ip, 0))
 		print "sent ack"
 
@@ -202,7 +208,7 @@ class RawSocket():
 		while True:
 			data = self.recv_next()
 			packet = InPacket(data)
-			self.send_ack()
+			self.send_ack(1)
 		print "received data"
 
 	def close(self):
