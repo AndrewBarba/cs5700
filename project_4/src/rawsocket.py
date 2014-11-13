@@ -98,7 +98,7 @@ class OutPacket():
                                  data_offset,
                                  flags, 
                                  self.tcp_window,
-                                 self.tcp_checksum,
+                                 self.checksum,
                                  self.urgp)
         #pseudo header fields
         source_ip = socket.inet_aton(self.ip_srcip)
