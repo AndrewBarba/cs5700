@@ -87,17 +87,19 @@ class OutPacket():
     def tcp(self):
         data_offset = (self.offset << 4) + 0
         flags = self.fin + (self.syn << 1) + (self.rst << 2) + (self.psh << 3) + (self.ack << 4) + (self.urg << 5)
-        tcp_header = struct.pack('!HHLLBBH',
+        tcp_header = struct.pack('!HHLLBBHHH',
                                  self.srcp,
                                  self.dstp,
                                  self.seqn,
                                  self.ackn,
                                  data_offset,
                                  flags, 
-                                 self.window)
+                                 self.window,
+                                 self.checksum,
+                                 self.urgp)
         #pseudo header fields
-        source_ip = self.srcip
-        destination_ip = self.dstip
+        source_ip = socket.inet_aton(self.srcip)
+        destination_ip = socket.inet_aton(self.dstip)
         reserved = 0
         protocol = socket.IPPROTO_TCP
         total_length = len(tcp_header) + len(self.payload)
@@ -118,7 +120,8 @@ class OutPacket():
                             data_offset,
                             flags,
                             self.window)
-        tcp_header += struct.pack('H', tcp_checksum) + struct.pack('!H', self.urgp)
+        tcp_header += struct.pack('H', tcp_checksum)
+        tcp_header += struct.pack('!H', self.urgp)
         return tcp_header
 
     def packet(self):
@@ -131,7 +134,7 @@ class OutPacket():
         self.dstip = ip
         self.srcp = 1234
         self.dstp = 80
-        self.seqn = 454
+        self.seqn = 0
         self.ackn = 0
         self.offset = 5 # Data offset: 5x4 = 20 bytes
         self.reserved = 0
@@ -145,7 +148,6 @@ class OutPacket():
         self.checksum = 0
         self.urgp = 0
         self.payload = data
-        self.data_length = len(data)
 
 
 class RawSocket():
