@@ -140,8 +140,8 @@ class OutPacket():
 		# tcp header fields
 		self.tcp_source = 1234   # source port
 		self.tcp_dest = 80   # destination port
-		self.tcp_seq = 1
-		self.tcp_ack_seq = 1
+		self.tcp_seq = 100
+		self.tcp_ack_seq = 0
 		self.tcp_doff = 8    #4 bit field, size of tcp header, 5 * 4 = 20 bytes
 		#tcp flags
 		self.tcp_fin = 0
