@@ -133,15 +133,17 @@ class OutPacket():
 		tcp_header = self.tcp_header(tcp_check)
 		return ip_header + tcp_header + self.data
 
-	def __init__(self, ip, data=''):
+	def __init__(self, ip, data=0):
 		self.ip = ip
 		self.source_ip = socket.gethostbyname(socket.gethostname())
 		self.data = data
+		# tcp header fields
 		self.tcp_source = 1234   # source port
 		self.tcp_dest = 80   # destination port
-		self.tcp_seq = 0
-		self.tcp_ack_seq = 0
+		self.tcp_seq = 1
+		self.tcp_ack_seq = 1
 		self.tcp_doff = 8    #4 bit field, size of tcp header, 5 * 4 = 20 bytes
+		#tcp flags
 		self.tcp_fin = 0
 		self.tcp_syn = 0
 		self.tcp_rst = 0
