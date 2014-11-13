@@ -135,7 +135,8 @@ class OutPacket():
     def __init__(self, sock, data=''):
         self.ip_srcip = socket.gethostbyname(socket.gethostname())
         self.ip_dstip = sock.ip
-        self.tcp_srcp = sock.port
+        self.tcp_srcp = sock.src_port
+	print(self.tcp_srcp)
         self.tcp_dstp = 80
         self.tcp_seqn = sock.seqn
         self.tcp_ackn = sock.ackn
@@ -216,7 +217,8 @@ class RawSocket():
         self.send_ack()
 
     def __init__(self):
-        self.port = random.randint(49152,65535)
+        self.src_port = random.randint(49152,65535)
+	self.port = 1234
         self.seqn = 454
         self.ackn = 0
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
