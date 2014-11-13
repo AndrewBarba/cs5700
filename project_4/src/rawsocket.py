@@ -178,6 +178,12 @@ class RawSocket():
         ack.ack = 1
         self.socket.sendto(ack.packet(), (self.ip, 0))
 
+    def send_fin(self):
+        fin = OutPacket(self)
+        fin.ack = 1
+        fin.fin = 1
+        self.socket.sendto(fin.packet(), (self.ip, 0))
+
     def send(self, data):
         packet = OutPacket(self, data)
         packet.ack = 1
@@ -205,10 +211,9 @@ class RawSocket():
                 return data
 
     def close(self):
-        print "closing socket"
-        while True:
-            self.ip
-        print "closed socket"
+        self.send_fin()
+        self.recv_next()
+        self.send_ack()
 
     def __init__(self):
         self.port = 1244
