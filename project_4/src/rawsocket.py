@@ -47,109 +47,109 @@ class InPacket():
 
 class OutPacket():
 
-	def checksum(self, msg):
+	def checksum(self, data):
 		s = 0
-		 
-		# loop taking 2 characters at a time
-		for i in range(0, len(msg), 2):
-		    w = ord(msg[i]) + (ord(msg[i+1]) << 8 )
-		    s = s + w
-		 
-		s = (s>>16) + (s & 0xffff);
-		s = s + (s >> 16);
-		 
-		#complement and mask to 4 byte short
-		s = ~s & 0xffff
-		 
-		return s
+	    n = len(data) % 2
+	    for i in range(0, len(data)-n, 2):
+	        s+= ord(data[i]) + (ord(data[i+1]) << 8)
+	    if n:
+	        s+= ord(data[i+1])
+	    while (s >> 16):
+	        print("s >> 16: ", s >> 16)
+	        s = (s & 0xFFFF) + (s >> 16)
+	    print("sum:", s)
+	    s = ~s & 0xffff
+	    return s
 
-	def ip_header(self):
-		ip = self.ip
-		source_ip = self.source_ip
-		dest_ip = ip
-		 
-		# ip header fields
-		ip_ihl = 5
-		ip_ver = 4
-		ip_tos = 0
-		ip_tot_len = 0  # kernel will fill the correct total length
-		ip_id = 54321   #Id of this packet
-		ip_frag_off = 0
-		ip_ttl = 255
-		ip_proto = socket.IPPROTO_TCP
-		ip_check = 0    # kernel will fill the correct checksum
-		ip_saddr = socket.inet_aton ( source_ip )   #Spoof the source ip address if you want to
-		ip_daddr = socket.inet_aton ( dest_ip )
-		 
-		ip_ihl_ver = (ip_ver << 4) + ip_ihl
-		 
-		# the ! in the pack format string means network order
-		return pack('!BBHHHBBH4s4s' , ip_ihl_ver, ip_tos, ip_tot_len, ip_id, ip_frag_off, ip_ttl, ip_proto, ip_check, ip_saddr, ip_daddr)
+	def ip(self):
+		version = 4
+        ihl = 5 # Internet Header Length
+        tos = 0 # Type of Service
+        tl = 0 # total length will be filled by kernel
+        id = 54321
+        flags = 0 # More fragments
+        offset = 0
+        ttl = 255
+        protocol = socket.IPPROTO_TCP
+        checksum = 0 # will be filled by kernel
+        source = socket.inet_aton(self.srcp)
+        destination = socket.inet_aton(self.dstp)
+		ver_ihl = (version << 4) + ihl
+        flags_offset = (flags << 13) + offset
+        ip_header = struct.pack("!BBHHHBBH4s4s",
+                    ver_ihl,
+                    tos,
+                    tl,
+                    id,
+                    flags_offset,
+                    ttl,
+                    protocol,
+                    checksum,
+                    source,
+                    destination)
+        return ip_header
 
-	def tcp_header(self, check=0):
-		# tcp header fields
-		tcp_source  = self.tcp_source  
-		tcp_dest    = self.tcp_dest    
-		tcp_seq     = self.tcp_seq     
-		tcp_ack_seq = self.tcp_ack_seq 
-		tcp_doff    = self.tcp_doff    
-		#tcp flags
-		tcp_fin = self.tcp_fin
-		tcp_syn = self.tcp_syn
-		tcp_rst = self.tcp_rst
-		tcp_psh = self.tcp_psh
-		tcp_ack = self.tcp_ack
-		tcp_urg = self.tcp_urg
-		tcp_window = socket.htons (5840)    #   maximum allowed window size
-		tcp_check = check
-		tcp_urg_ptr = 0
-		 
-		tcp_offset_res = (tcp_doff << 4) + 0
-		tcp_flags = tcp_fin + (tcp_syn << 1) + (tcp_rst << 2) + (tcp_psh <<3) + (tcp_ack << 4) + (tcp_urg << 5)
-		 
-		# the ! in the pack format string means network order
-		if check != 0:
-			return pack('!HHLLBBH' , tcp_source, tcp_dest, tcp_seq, tcp_ack_seq, tcp_offset_res, tcp_flags,  tcp_window) + pack('H' , tcp_check) + pack('!H' , tcp_urg_ptr)
-		else:
-			return pack('!HHLLBBHHH' , tcp_source, tcp_dest, tcp_seq, tcp_ack_seq, tcp_offset_res, tcp_flags,  tcp_window, tcp_check, tcp_urg_ptr)
+	def tcp(self):
+		data_offset = (self.offset << 4) + 0
+        flags = self.fin + (self.syn << 1) + (self.rst << 2) + (self.psh << 3) + (self.ack << 4) + (self.urg << 5)
+        tcp_header = struct.pack('!HHLLBBHHH',
+                     self.srcp,
+                     self.dstp,
+                     self.seqn,
+                     self.ackn,
+                     data_offset,
+                     flags, 
+                     self.window,
+                     self.checksum,
+                     self.urgp)
+        #pseudo header fields
+        source_ip = self.srcp
+        destination_ip = self.dstp
+        reserved = 0
+        protocol = socket.IPPROTO_TCP
+        total_length = len(tcp_header) + len(self.payload)
+        # Pseudo header
+        psh = struct.pack("!4s4sBBH",
+              source_ip,
+              destination_ip,
+              reserved,
+              protocol,
+              total_length)
+        psh = psh + tcp_header + self.payload
+        tcp_checksum = self.checksum(psh)
+        tcp_header = struct.pack("!HHLLBBH",
+                  self.srcp,
+                  self.dstp,
+                  self.seqn,
+                  self.ackn,
+                  data_offset,
+                  flags,
+                  self.window)
+        tcp_header+= struct.pack('H', tcp_checksum) + struct.pack('!H', self.urgp)
+        return tcp_header
 
-	def psh(self):
-		# pseudo header fields
-		tcp_header = self.tcp_header()
-		user_data = self.data
-		source_address = socket.inet_aton( self.source_ip )
-		dest_address = socket.inet_aton(self.ip)
-		placeholder = 0
-		protocol = socket.IPPROTO_TCP
-		tcp_length = len(tcp_header) + len(user_data)
-		 
-		psh = pack('!4s4sBBH' , source_address , dest_address , placeholder , protocol , tcp_length);
-		return psh + tcp_header + self.data;
-
-	def packet(self):
-		ip_header = self.ip_header()
-		psh = self.psh()
-		tcp_check = self.checksum(psh)
-		tcp_header = self.tcp_header(tcp_check)
-		return ip_header + tcp_header + self.data
+     def packet(self):
+     	ip = self.ip()
+     	tpc = self.tcp()
+     	return ip + tcp + self.payload
 
 	def __init__(self, ip, data=''):
-		self.ip = ip
-		self.source_ip = socket.gethostbyname(socket.gethostname())
-		self.data = data
-		# tcp header fields
-		self.tcp_source = 1234   # source port
-		self.tcp_dest = 80   # destination port
-		self.tcp_seq = 100
-		self.tcp_ack_seq = 0
-		self.tcp_doff = 8    #4 bit field, size of tcp header, 5 * 4 = 20 bytes
-		#tcp flags
-		self.tcp_fin = 0
-		self.tcp_syn = 0
-		self.tcp_rst = 0
-		self.tcp_psh = 0
-		self.tcp_ack = 0
-		self.tcp_urg = 0
+		self.srcp = socket.gethostbyname(socket.gethostname())
+        self.dstp = ip
+        self.seqn = 0
+        self.ackn = 0
+        self.offset = 5 # Data offset: 5x4 = 20 bytes
+        self.reserved = 0
+        self.urg = 0
+        self.ack = 0
+        self.psh = 1
+        self.rst = 0
+        self.syn = 0
+        self.fin = 0
+        self.window = socket.htons(5840)
+        self.checksum = 0
+        self.urgp = 0
+        self.payload = data
 
 
 class RawSocket():
