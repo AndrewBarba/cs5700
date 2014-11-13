@@ -92,7 +92,7 @@ class Packet():
 
 	def __init__(self, ip, data=''):
 		self.ip = ip
-		self.source_ip = '104.236.53.85'
+		self.source_ip = socket.gethostbyname(socket.gethostname())
 		self.data = data
 		self.tcp_fin = 0
 		self.tcp_syn = 0
