@@ -36,6 +36,6 @@ var count = 0;
 pcap_session.on('packet', function (raw_packet) {
     count++;
     var packet = pcap.decode.packet(raw_packet);
-    // if (count == 1) console.log(JSON.stringify(packet, null, 2));
+    if (count == 4) console.log(JSON.stringify(packet, null, 2));
     util.puts(pcap.print.packet(packet));
 });

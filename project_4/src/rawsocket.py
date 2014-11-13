@@ -148,7 +148,7 @@ class RawSocket():
 		packet = OutPacket(self.ip, data)
 		return self.socket.sendto(packet.packet(), (self.ip, 0))
 
-	def recv_next(bytes=65565):
+	def recv_next(self, bytes=65565):
 		while True:
 			packet = self.rsocket.recvfrom(65565)
 			ip = packet[1][0]
