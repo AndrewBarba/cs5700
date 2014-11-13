@@ -147,6 +147,7 @@ class OutPacket():
         self.checksum = 0
         self.urgp = 0
         self.payload = data
+        self.data_length = len(data)
 
 
 class RawSocket():
