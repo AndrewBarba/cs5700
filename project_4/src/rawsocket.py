@@ -1,5 +1,5 @@
 
-import socket, sys, struct
+import socket, sys, struct, random
 
 class InPacket():
 
@@ -216,7 +216,7 @@ class RawSocket():
         self.send_ack()
 
     def __init__(self):
-        self.port = 1244
+        self.port = random.randint(49152,65535)
         self.seqn = 454
         self.ackn = 0
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
