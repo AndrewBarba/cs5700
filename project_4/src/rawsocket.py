@@ -69,8 +69,8 @@ class OutPacket():
         ttl = 255
         protocol = socket.IPPROTO_TCP
         checksum = 0 # will be filled by kernel
-        source = socket.inet_aton(self.srcp)
-        destination = socket.inet_aton(self.dstp)
+        source = socket.inet_aton(self.srcip)
+        destination = socket.inet_aton(self.dstip)
         ver_ihl = (version << 4) + ihl
         flags_offset = (flags << 13) + offset
         ip_header = struct.pack("!BBHHHBBH4s4s",
@@ -131,8 +131,10 @@ class OutPacket():
         return ip + tcp + self.payload
 
     def __init__(self, ip, data=''):
-        self.srcp = socket.gethostbyname(socket.gethostname())
-        self.dstp = ip
+        self.srcip = socket.gethostbyname(socket.gethostname())
+        self.dstip = ip
+        self.srcp = 1234
+        self.destp = 80
         self.seqn = 0
         self.ackn = 0
         self.offset = 5 # Data offset: 5x4 = 20 bytes
