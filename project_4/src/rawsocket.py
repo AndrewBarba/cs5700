@@ -100,8 +100,8 @@ class OutPacket():
                                  self.checksum,
                                  self.urgp)
         #pseudo header fields
-        source_ip = self.srcp
-        destination_ip = self.dstp
+        source_ip = self.srcip
+        destination_ip = self.dstip
         reserved = 0
         protocol = socket.IPPROTO_TCP
         total_length = len(tcp_header) + len(self.payload)
