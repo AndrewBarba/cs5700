@@ -99,7 +99,7 @@ class OutPacket():
                                  flags, 
                                  self.tcp_window,
                                  self.tcp_checksum,
-                                 self.tcp_urgp)
+                                 self.urgp)
         #pseudo header fields
         source_ip = socket.inet_aton(self.ip_srcip)
         destination_ip = socket.inet_aton(self.ip_dstip)
@@ -124,7 +124,7 @@ class OutPacket():
                             flags,
                             self.tcp_window)
         tcp_header += struct.pack('H', tcp_checksum)
-        tcp_header += struct.pack('!H', self.tcp_urgp)
+        tcp_header += struct.pack('!H', self.urgp)
         return tcp_header
 
     def packet(self):
@@ -149,7 +149,7 @@ class OutPacket():
         self.tcp_flg_fin = 0
         self.tcp_window = socket.htons(5840)
         self.checksum = 0
-        self.tcp_urgp = 0
+        self.urgp = 0
 
         if len(data) % 2 == 1:
             data += "0"
