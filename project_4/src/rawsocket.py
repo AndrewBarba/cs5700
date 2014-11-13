@@ -1,6 +1,6 @@
 
 import socket, sys
-from struct import struct
+import struct as struct
 
 class InPacket():
 
