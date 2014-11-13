@@ -33,6 +33,8 @@ def writefile(data, path):
 	f.write(data)
 	f.close()
 
+#### MAIN
+
 # Perform GET request
 data = http.get(URL)
 

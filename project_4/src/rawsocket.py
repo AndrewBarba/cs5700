@@ -50,16 +50,21 @@ class InPacket():
 class OutPacket():
 
     def tcp_checksum(self, msg):
+        """
+        Computes the checksum of a single TCP/IP packet
+        """
         s = 0
         for i in range(0, len(msg), 2):
-            w = ord(msg[i]) + (ord(msg[i+1]) << 8 )
-            s = s + w
-        s = (s>>16) + (s & 0xffff);
+            s = ord(msg[i]) + (ord(msg[i+1]) << 8 )
+        s = (s >> 16) + (s & 0xffff);
         s = s + (s >> 16);
-        s = ~s & 0xffff
-        return s
+        return ~s & 0xffff
 
     def ip(self):
+        """
+        Builds a single IP header with proper
+        source and destination ip address
+        """
         version = 4
         headlen = 5 # Internet Header Length
         tos = 0 # Type of Service
@@ -88,6 +93,10 @@ class OutPacket():
         return ip_header
 
     def tcp(self):
+        """
+        Builds a single TCP header with proper checksum
+        and supports additional payload data
+        """
         data_offset = (self.tcp_offset << 4) + 0
         flags = self.tcp_flg_fin + (self.tcp_flg_syn << 1) + (self.tcp_flg_rst << 2) + (self.tcp_flg_psh << 3) + (self.tcp_flg_ack << 4) + (self.tcp_flg_urg << 5)
         tcp_header = struct.pack('!HHLLBBHHH',
@@ -128,6 +137,10 @@ class OutPacket():
         return tcp_header
 
     def packet(self):
+        """
+        Build a single TCP/IP header by combinging
+        IP header, TCP header and payload
+        """
         ip = self.ip()
         tcp = self.tcp()
         return ip + tcp + self.payload
@@ -151,6 +164,7 @@ class OutPacket():
         self.checksum = 0
         self.urgp = 0
 
+        # handle uneven payload data
         if len(data) % 2 == 1:
             data += "0"
         self.payload = data
@@ -158,6 +172,10 @@ class OutPacket():
 class RawSocket():
 
     def connect(self, domain, port):
+        """
+        Connects to the given domain by performing
+        the TCP 3 way handshake
+        """
         # set ip and port number
         self.ip = socket.gethostbyname(domain)
         self.port = port
@@ -169,22 +187,34 @@ class RawSocket():
         self.send_ack()
 
     def send_syn(self):
+        """
+        Sends a single syn packet
+        """
         syn = OutPacket(self)
         syn.tcp_flg_syn = 1
         self.socket.sendto(syn.packet(), (self.ip, 0))
 
     def send_ack(self):
+        """
+        Sends a single ack packet
+        """
         ack = OutPacket(self)
         ack.tcp_flg_ack = 1
         self.socket.sendto(ack.packet(), (self.ip, 0))
 
     def send_fin(self):
+        """
+        Sends a single fin packet
+        """
         fin = OutPacket(self)
         fin.tcp_flg_ack = 1
         fin.tcp_flg_fin = 1
         self.socket.sendto(fin.packet(), (self.ip, 0))
 
     def send(self, data):
+        """
+        Sends a packet with payload data, also known as a push
+        """
         packet = OutPacket(self, data)
         packet.tcp_flg_ack = 1
         packet.tcp_flg_psh = 1
@@ -192,6 +222,11 @@ class RawSocket():
         self.recv_next()
 
     def recv_next(self, bytes=65565):
+        """
+        Reads in one packet and properly checks to make 
+        sure it is a packet intented for this program
+        Also updates our syn and ack sequence numbers
+        """
         while True:
             packet = self.rsocket.recvfrom(65565)
             ip = packet[1][0]
@@ -202,6 +237,9 @@ class RawSocket():
                 return packet
 
     def recv(self, bytes=65565):
+        """
+        Recieves the body of the response and returns it as a string
+        """
         data = ""
         while True:
             packet = self.recv_next()
@@ -211,8 +249,14 @@ class RawSocket():
                 return data
 
     def close(self):
+        """
+        Closes out the TCP connection
+        """
+        # send fin packet acknowledging connection is done
         self.send_fin()
+        # recieve ack packet
         self.recv_next()
+        # send final ack
         self.send_ack()
 
     def __init__(self):
