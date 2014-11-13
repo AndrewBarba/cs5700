@@ -22,7 +22,7 @@ class InPacket():
 		self.chksum
 		self.urg_prt
 
-	def parse_header(self)
+	def parse_header(self):
 		header = unpack('!HHLLBBHHH', self.packet[0:20])
 		self.src_prt = header[0]
 		self.dst_prt = header[1]
