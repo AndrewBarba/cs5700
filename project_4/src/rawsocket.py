@@ -51,7 +51,7 @@ class OutPacket():
 		s = 0
 		 
 		# loop taking 2 characters at a time
-		for i in range(0, len(msg), 2):
+		for i in range(0, len(msg)-1, 2):
 		    w = ord(msg[i]) + (ord(msg[i+1]) << 8 )
 		    s = s + w
 		 
@@ -66,7 +66,7 @@ class OutPacket():
 	def ip_header(self):
 		ip = self.ip
 		source_ip = self.source_ip
-		dest_ip = ip # or socket.gethostbyname('www.google.com')
+		dest_ip = ip
 		 
 		# ip header fields
 		ip_ihl = 5
@@ -155,52 +155,61 @@ class RawSocket():
 		print "resolved ip: %s" % self.ip
 
 		# send syn
-		print "sending syn..."
 		self.send_syn()
-		print "syn sent"
 
 		# receive syn/ack
-		print "waiting for syn/ack"
 		synack = self.recv_next()
-		print "received syn/ack"
 
 		# send ack
-		print "sending ack"
 		self.send_ack()
-		print "sent ack"
 
-		print "connected"
 		return self.ip
 
 	def send_syn(self):
+		print "sending syn"
 		syn = OutPacket(self.ip)
 		syn.tcp_syn = 1
 		self.socket.sendto(syn.packet(), (self.ip, 0))
+		print "sent syn"
 
 	def send_ack(self):
+		print "sending ack"
 		ack = OutPacket(self.ip)
 		ack.tcp_ack = 1
 		self.socket.sendto(ack.packet(), (self.ip, 0))
+		print "sent ack"
 
 	def send(self, data):
+		print "sending data"
 		packet = OutPacket(self.ip, data)
-		return self.socket.sendto(packet.packet(), (self.ip, 0))
+		packet.tcp_ack = 1
+		packet.tcp_psh = 1
+		self.socket.sendto(packet.packet(), (self.ip, 0))
+		print "sent data"
 
 	def recv_next(self, bytes=65565):
+		print "receiving packet"
 		while True:
 			packet = self.rsocket.recvfrom(65565)
 			ip = packet[1][0]
 			if ip == self.ip:
+				print "received packet"
 				return packet
 				
 
 	def recv(self, bytes=65565):
-		d = self.socket.recvfrom(bytes)
-		print d
-		return d
+		print "receiving data"
+		while True:
+			data = self.recv_next()
+			packet = InPacket(data)
+			self.send_ack()
+		print "received data"
 
 	def close(self):
-		return self.socket.close()
+		print "closing socket"
+		while True:
+			self.ip
+		print "closed socket"
 
 	def __init__(self):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
