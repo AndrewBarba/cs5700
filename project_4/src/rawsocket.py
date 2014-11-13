@@ -145,6 +145,8 @@ class RawSocket():
 		self.socket.sendto(ack.packet(), (self.ip, 0))
 
 	def send(self, data):
+		while True:
+			self.ip
 		#packet = OutPacket(self.ip, data)
 		#return self.socket.sendto(packet.packet(), (self.ip, 0))
 
