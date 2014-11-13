@@ -149,7 +149,7 @@ class OutPacket():
         self.ip_srcip = sock.src_ip
         self.ip_dstip = sock.ip
         self.tcp_srcp = sock.src_port
-        self.tcp_dstp = 80
+        self.tcp_dstp = sock.dst_port
         self.tcp_seqn = sock.seqn
         self.tcp_ackn = sock.ackn
         self.tcp_offset = 5 # Data offset: 5x4 = 20 bytes
@@ -178,7 +178,7 @@ class RawSocket():
         """
         # set ip and port number
         self.ip = socket.gethostbyname(domain)
-        self.port = port
+        self.dst_port = port
         # send syn
         self.send_syn()
         # receive syn/ack
@@ -261,8 +261,8 @@ class RawSocket():
 
     def __init__(self):
         self.src_ip = socket.gethostbyname(socket.gethostname())
-        print self.src_ip
         self.src_port = random.randint(49152,65535)
+        self.dst_port = 80
         self.seqn = random.randint(200,9999)
         self.ackn = 0
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
