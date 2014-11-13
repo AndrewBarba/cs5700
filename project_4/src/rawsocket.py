@@ -51,7 +51,7 @@ class OutPacket():
 		s = 0
 		 
 		# loop taking 2 characters at a time
-		for i in range(0, len(msg)-1, 2):
+		for i in range(0, len(msg), 2):
 		    w = ord(msg[i]) + (ord(msg[i+1]) << 8 )
 		    s = s + w
 		 
