@@ -10,6 +10,7 @@ class InPacket():
 class OutPacket():
 
 	def checksum(self, msg):
+		print msg
 		s = 0
 		 
 		# loop taking 2 characters at a time
@@ -28,7 +29,7 @@ class OutPacket():
 	def ip_header(self):
 		ip = self.ip
 		source_ip = self.source_ip
-		dest_ip = ip # or socket.gethostbyname('www.google.com')
+		dest_ip = ip
 		 
 		# ip header fields
 		ip_ihl = 5
