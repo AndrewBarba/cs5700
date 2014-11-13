@@ -133,7 +133,7 @@ class OutPacket():
 		tcp_header = self.tcp_header(tcp_check)
 		return ip_header + tcp_header + self.data
 
-	def __init__(self, ip, data=0):
+	def __init__(self, ip, data=''):
 		self.ip = ip
 		self.source_ip = socket.gethostbyname(socket.gethostname())
 		self.data = data
