@@ -217,7 +217,7 @@ class RawSocket():
 
     def __init__(self):
         self.src_port = random.randint(49152,65535)
-	    self.port = 1234
+        self.port = 1234
         self.seqn = 454
         self.ackn = 0
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
