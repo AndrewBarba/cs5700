@@ -110,43 +110,51 @@ class OutPacket():
 class RawSocket():
 
 	def connect(self, domain, port):
-		print "connecting to %s" % domain
-
 		# set ip and port number
+		print "connecting to %s" % domain
 		self.ip = socket.gethostbyname(domain)
 		self.port = port
 		print "resolved ip: %s" % self.ip
 
 		# send syn
 		print "sending syn..."
-		syn = OutPacket(self.ip)
-		syn.tcp_syn = 1
-		self.socket.sendto(syn.packet(), (self.ip, 0))
-		print "syn sent."
+		self.send_syn()
+		print "syn sent"
 
 		# receive syn/ack
 		print "waiting for syn/ack"
-		synack = False
-		while not synack:
-			r = self.rsocket.recvfrom(65565)
-			ip = r[1][0]
-			if ip == self.ip:
-				synack = r
+		synack = self.recv_next()
 		print "received syn/ack"
 
 		# send ack
 		print "sending ack"
+		self.send_ack()
+		print "sent ack"
+
+		print "connected"
+		return self.ip
+
+	def send_syn(self):
+		syn = OutPacket(self.ip)
+		syn.tcp_syn = 1
+		self.socket.sendto(syn.packet(), (self.ip, 0))
+
+	def send_ack(self):
 		ack = OutPacket(self.ip)
 		ack.tcp_ack = 1
 		self.socket.sendto(ack.packet(), (self.ip, 0))
-		print "sent ack"
-
-		print "connected."
-		return self.ip
 
 	def send(self, data):
 		packet = OutPacket(self.ip, data)
 		return self.socket.sendto(packet.packet(), (self.ip, 0))
+
+	def recv_next(bytes=65565):
+		while True:
+			packet = self.rsocket.recvfrom(65565)
+			ip = packet[1][0]
+			if ip == self.ip:
+				return packet
+				
 
 	def recv(self, bytes=65565):
 		d = self.socket.recvfrom(bytes)
