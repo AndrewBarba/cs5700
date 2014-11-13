@@ -77,7 +77,7 @@ class OutPacket():
         ip_header = struct.pack("!BBHHHBBH4s4s",
                                 ver_ihl,
                                 tos,
-                                tl,
+                                totallen,
                                 id,
                                 flags_offset,
                                 ttl,
