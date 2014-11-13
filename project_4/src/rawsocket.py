@@ -134,7 +134,7 @@ class OutPacket():
         self.srcip = socket.gethostbyname(socket.gethostname())
         self.dstip = ip
         self.srcp = 1234
-        self.destp = 80
+        self.dstp = 80
         self.seqn = 0
         self.ackn = 0
         self.offset = 5 # Data offset: 5x4 = 20 bytes
