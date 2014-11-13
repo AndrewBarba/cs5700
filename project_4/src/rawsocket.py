@@ -127,7 +127,7 @@ class OutPacket():
 
     def packet(self):
         ip = self.ip()
-        tpc = self.tcp()
+        tcp = self.tcp()
         return ip + tcp + self.payload
 
     def __init__(self, ip, data=''):
