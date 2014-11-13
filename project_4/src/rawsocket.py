@@ -1,33 +1,36 @@
 
-import socket, sys
-import struct as struct
+import socket, sys, struct
 
 class InPacket():
 
     def __init__(self, packet):
-        self.packet = packet
-        self.src_prt
-        self.dst_prt
-        self.seq_num
-        self.ack_num
-        self.offset
-        self.flags
-        self.flg_fin
-        self.flg_syn
-        self.flg_rst
-        self.flg_psh
-        self.flg_ack
-        self.flg_urg
-        self.window
-        self.chksum
-        self.urg_prt
+        self.packet = packet[0]
+        self.src_prt = 0
+        self.dst_prt = 0
+        self.seqn = 0
+        self.ackn = 0
+        self.offset = 0
+        self.flags = 0
+        self.flg_fin = 0
+        self.flg_syn = 0
+        self.flg_rst = 0
+        self.flg_psh = 0
+        self.flg_ack = 0
+        self.flg_urg = 0
+        self.window = 0
+        self.chksum = 0
+        self.urg_prt = 0
+        self.header_size = 0
+        self.data_size = 0
+        self.data = 0
 
-    def parse_header(self):
-        header = unpack('!HHLLBBHHH', self.packet[0:20])
+    def parse(self):
+        header = struct.unpack('!HHLLBBHHH', self.packet[20:40])
         self.src_prt = header[0]
         self.dst_prt = header[1]
-        self.seq_num = header[2]
-        self.ack_num = header[3]
+        self.seqn = header[2]
+        print header[2]
+        self.ackn = header[3]
         self.offset = header[4]
         self.flags = header[5]
         self.flg_fin = (self.flags & 1)
@@ -39,6 +42,9 @@ class InPacket():
         self.window = header[6]
         self.chksum = header[7]
         self.urg_prt = header[8]
+        self.header_size = 20 + (4 * (self.offset >> 4))
+        self.data_size = len(self.packet) - self.header_size
+        self.data = self.packet[self.header_size:]
         return self
         
 
@@ -129,13 +135,13 @@ class OutPacket():
         tcp = self.tcp()
         return ip + tcp + self.payload
 
-    def __init__(self, ip, data=''):
+    def __init__(self, sock, data=''):
         self.srcip = socket.gethostbyname(socket.gethostname())
-        self.dstip = ip
+        self.dstip = sock.ip
         self.srcp = 1234
         self.dstp = 80
-        self.seqn = 0
-        self.ackn = 0
+        self.seqn = sock.seqn
+        self.ackn = sock.ackn
         self.offset = 5 # Data offset: 5x4 = 20 bytes
         self.reserved = 0
         self.urg = 0
@@ -161,27 +167,25 @@ class RawSocket():
         # receive syn/ack
         self.recv_next()
         # send ack
-        self.send_ack(1, 1)
+        self.send_ack()
 
     def send_syn(self):
         print "sending syn"
-        syn = OutPacket(self.ip)
+        syn = OutPacket(self)
         syn.syn = 1
         self.socket.sendto(syn.packet(), (self.ip, 0))
         print "sent syn"
 
-    def send_ack(self, seq, ack_seq):
+    def send_ack(self):
         print "sending ack"
-        ack = OutPacket(self.ip)
+        ack = OutPacket(self)
         ack.ack = 1
-        ack.seqn = seq
-        ack.ackn = ack_seq
         self.socket.sendto(ack.packet(), (self.ip, 0))
         print "sent ack"
 
     def send(self, data):
         print "sending data"
-        packet = OutPacket(self.ip, data)
+        packet = OutPacket(self, data)
         packet.ack = 1
         packet.psh = 1
         self.socket.sendto(packet.packet(), (self.ip, 0))
@@ -194,14 +198,17 @@ class RawSocket():
             ip = packet[1][0]
             if ip == self.ip:
                 print "received packet"
+                packet = InPacket(packet).parse()
+                print packet.data_size
+                self.seqn = packet.ackn
+                self.ackn = packet.seqn + packet.data_size + 1
                 return packet
 
     def recv(self, bytes=65565):
         print "receiving data"
         while True:
-            data = self.recv_next()
-            packet = InPacket(data)
-            self.send_ack(1)
+            packet = self.recv_next()
+            self.send_ack()
         print "received data"
 
     def close(self):
@@ -211,6 +218,8 @@ class RawSocket():
         print "closed socket"
 
     def __init__(self):
+        self.seqn = 454
+        self.ackn = 0
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
         self.rsocket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
 
