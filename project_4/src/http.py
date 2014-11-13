@@ -23,12 +23,7 @@ def get(url):
 	sock.send(req)
 
 	# get data
-	data = ""
-	while 1:
-		line = sock.recv()
-		data += line
-		if len(line) == 0:
-			break
+	data = sock.recv()
 
 	# close the socket
 	sock.close()

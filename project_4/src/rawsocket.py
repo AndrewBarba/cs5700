@@ -29,7 +29,6 @@ class InPacket():
         self.src_prt = header[0]
         self.dst_prt = header[1]
         self.seqn = header[2]
-        print header[2]
         self.ackn = header[3]
         self.offset = header[4]
         self.flags = header[5]
@@ -50,15 +49,13 @@ class InPacket():
 
 class OutPacket():
 
-    def tcp_checksum(self, data):
+    def tcp_checksum(self, msg):
         s = 0
-        n = len(data) % 2
-        for i in range(0, len(data)-n, 2):
-            s+= ord(data[i]) + (ord(data[i+1]) << 8)
-        if n:
-            s+= ord(data[i+1])
-        while (s >> 16):
-            s = (s & 0xFFFF) + (s >> 16)
+        for i in range(0, len(msg), 2):
+            w = ord(msg[i]) + (ord(msg[i+1]) << 8 )
+            s = s + w
+        s = (s>>16) + (s & 0xffff);
+        s = s + (s >> 16);
         s = ~s & 0xffff
         return s
 
@@ -138,7 +135,7 @@ class OutPacket():
     def __init__(self, sock, data=''):
         self.srcip = socket.gethostbyname(socket.gethostname())
         self.dstip = sock.ip
-        self.srcp = 1234
+        self.srcp = sock.port
         self.dstp = 80
         self.seqn = sock.seqn
         self.ackn = sock.ackn
@@ -153,8 +150,10 @@ class OutPacket():
         self.window = socket.htons(5840)
         self.checksum = 0
         self.urgp = 0
-        self.payload = data
 
+        if len(data) % 2 == 1:
+            data += "0"
+        self.payload = data
 
 class RawSocket():
 
@@ -170,46 +169,40 @@ class RawSocket():
         self.send_ack()
 
     def send_syn(self):
-        print "sending syn"
         syn = OutPacket(self)
         syn.syn = 1
         self.socket.sendto(syn.packet(), (self.ip, 0))
-        print "sent syn"
 
     def send_ack(self):
-        print "sending ack"
         ack = OutPacket(self)
         ack.ack = 1
         self.socket.sendto(ack.packet(), (self.ip, 0))
-        print "sent ack"
 
     def send(self, data):
-        print "sending data"
         packet = OutPacket(self, data)
         packet.ack = 1
         packet.psh = 1
         self.socket.sendto(packet.packet(), (self.ip, 0))
-        print "sent data"
+        self.recv_next()
 
     def recv_next(self, bytes=65565):
-        print "receiving packet"
         while True:
             packet = self.rsocket.recvfrom(65565)
             ip = packet[1][0]
             if ip == self.ip:
-                print "received packet"
                 packet = InPacket(packet).parse()
-                print packet.data_size
                 self.seqn = packet.ackn
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
 
     def recv(self, bytes=65565):
-        print "receiving data"
+        data = ""
         while True:
             packet = self.recv_next()
+            data += packet.data
             self.send_ack()
-        print "received data"
+            if packet.flg_fin:
+                return data
 
     def close(self):
         print "closing socket"
@@ -218,6 +211,7 @@ class RawSocket():
         print "closed socket"
 
     def __init__(self):
+        self.port = 1244
         self.seqn = 454
         self.ackn = 0
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
