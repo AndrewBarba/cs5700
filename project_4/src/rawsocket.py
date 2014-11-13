@@ -146,7 +146,7 @@ class OutPacket():
         return ip + tcp + self.payload
 
     def __init__(self, sock, data=''):
-        self.ip_srcip = socket.gethostbyname(socket.gethostname())
+        self.ip_srcip = sock.src_ip
         self.ip_dstip = sock.ip
         self.tcp_srcp = sock.src_port
         self.tcp_dstp = 80
@@ -260,6 +260,8 @@ class RawSocket():
         self.send_ack()
 
     def __init__(self):
+        self.src_ip = socket.gethostbyname(socket.gethostname())
+        print self.src_ip
         self.src_port = random.randint(49152,65535)
         self.seqn = random.randint(200,9999)
         self.ackn = 0
