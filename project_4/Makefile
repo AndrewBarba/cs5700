@@ -1,6 +1,8 @@
 default:
-	iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
 	chmod +x ./rawhttpget
+
+iptables:
+	iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
 
 get:
 	./rawhttpget http://david.choffnes.com/classes/cs4700fa14/project4.php
