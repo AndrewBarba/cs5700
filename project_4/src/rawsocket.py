@@ -44,7 +44,7 @@ class InPacket():
 
 class OutPacket():
 
-    def checksum(self, data):
+    def tcp_checksum(self, data):
         s = 0
         n = len(data) % 2
         for i in range(0, len(data)-n, 2):
@@ -113,7 +113,7 @@ class OutPacket():
                     protocol,
                     total_length)
         psh = psh + tcp_header + self.payload
-        tcp_checksum = self.checksum(psh)
+        tcp_checksum = self.tcp_checksum(psh)
         tcp_header = struct.pack("!HHLLBBH",
                             self.srcp,
                             self.dstp,
