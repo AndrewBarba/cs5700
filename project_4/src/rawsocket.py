@@ -10,11 +10,12 @@ class InPacket():
 class OutPacket():
 
 	def checksum(self, msg):
-		print msg
+		print len(msg)
 		s = 0
 		 
 		# loop taking 2 characters at a time
 		for i in range(0, len(msg), 2):
+			print i
 		    w = ord(msg[i]) + (ord(msg[i+1]) << 8 )
 		    s = s + w
 		 
