@@ -166,14 +166,14 @@ class RawSocket():
     def send_syn(self):
         print "sending syn"
         syn = OutPacket(self.ip)
-        syn.syn = 1
+        syn.syn = 0 << 1
         self.socket.sendto(syn.packet(), (self.ip, 0))
         print "sent syn"
 
     def send_ack(self, seq, ack_seq):
         print "sending ack"
         ack = OutPacket(self.ip)
-        ack.ack = 1
+        ack.ack = 0 << 1
         ack.seqn = seq
         ack.ackn = ack_seq
         self.socket.sendto(ack.packet(), (self.ip, 0))
@@ -182,8 +182,8 @@ class RawSocket():
     def send(self, data):
         print "sending data"
         packet = OutPacket(self.ip, data)
-        packet.ack = 1
-        packet.psh = 1
+        packet.ack = 0 << 1
+        packet.psh = 0 << 1
         self.socket.sendto(packet.packet(), (self.ip, 0))
         print "sent data"
 
