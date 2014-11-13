@@ -87,16 +87,14 @@ class OutPacket():
     def tcp(self):
         data_offset = (self.offset << 4) + 0
         flags = self.fin + (self.syn << 1) + (self.rst << 2) + (self.psh << 3) + (self.ack << 4) + (self.urg << 5)
-        tcp_header = struct.pack('!HHLLBBHHH',
+        tcp_header = struct.pack('!HHLLBBH',
                                  self.srcp,
                                  self.dstp,
                                  self.seqn,
                                  self.ackn,
                                  data_offset,
                                  flags, 
-                                 self.window,
-                                 self.checksum,
-                                 self.urgp)
+                                 self.window)
         #pseudo header fields
         source_ip = self.srcip
         destination_ip = self.dstip
@@ -120,7 +118,7 @@ class OutPacket():
                             data_offset,
                             flags,
                             self.window)
-        tcp_header+= struct.pack('H', tcp_checksum) + struct.pack('!H', self.urgp)
+        tcp_header += struct.pack('H', tcp_checksum) + struct.pack('!H', self.urgp)
         return tcp_header
 
     def packet(self):
