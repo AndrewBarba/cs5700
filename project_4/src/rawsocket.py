@@ -181,7 +181,7 @@ class RawSocket():
 		print "sending ack"
 		ack = OutPacket(self.ip)
 		ack.tcp_ack = 1
-		self.tcp_ack_seq = seq
+		ack.tcp_ack_seq = seq
 		self.socket.sendto(ack.packet(), (self.ip, 0))
 		print "sent ack"
 
