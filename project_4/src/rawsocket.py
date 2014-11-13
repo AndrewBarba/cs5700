@@ -133,7 +133,6 @@ class RawSocket():
 			if ip == self.ip:
 				synack = r
 		print "received syn/ack"
-		print synack
 
 		# send ack
 		print "sending ack"
