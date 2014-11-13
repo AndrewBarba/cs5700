@@ -139,7 +139,7 @@ class OutPacket():
         self.reserved = 0
         self.urg = 0
         self.ack = 0
-        self.psh = 1
+        self.psh = 0
         self.rst = 0
         self.syn = 0
         self.fin = 0
