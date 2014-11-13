@@ -154,21 +154,14 @@ class RawSocket():
 
 	def connect(self, domain, port):
 		# set ip and port number
-		print "connecting to %s" % domain
 		self.ip = socket.gethostbyname(domain)
 		self.port = port
-		print "resolved ip: %s" % self.ip
-
 		# send syn
 		self.send_syn()
-
 		# receive syn/ack
-		synack = self.recv_next()
-
+		self.recv_next()
 		# send ack
 		self.send_ack(1)
-
-		return self.ip
 
 	def send_syn(self):
 		print "sending syn"
@@ -201,7 +194,6 @@ class RawSocket():
 			if ip == self.ip:
 				print "received packet"
 				return packet
-				
 
 	def recv(self, bytes=65565):
 		print "receiving data"
