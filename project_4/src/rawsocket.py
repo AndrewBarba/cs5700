@@ -165,7 +165,8 @@ class RawSocket():
 			self.send_ack()
 
 	def close(self):
-		
+		while True:
+			self.ip
 
 	def __init__(self):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_RAW)
