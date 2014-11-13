@@ -61,18 +61,18 @@ class OutPacket():
 
     def ip(self):
         version = 4
-        ihl = 5 # Internet Header Length
+        headlen = 5 # Internet Header Length
         tos = 0 # Type of Service
-        tl = 0 # total length will be filled by kernel
+        totallen = 0 # total length will be filled by kernel
         id = 54321
         flags = 0 # More fragments
         offset = 0
         ttl = 255
         protocol = socket.IPPROTO_TCP
         checksum = 0 # will be filled by kernel
-        source = socket.inet_aton(self.srcip)
-        destination = socket.inet_aton(self.dstip)
-        ver_ihl = (version << 4) + ihl
+        source = socket.inet_aton(self.ip_srcip)
+        destination = socket.inet_aton(self.ip_dstip)
+        ver_ihl = (version << 4) + headlen
         flags_offset = (flags << 13) + offset
         ip_header = struct.pack("!BBHHHBBH4s4s",
                                 ver_ihl,
@@ -88,21 +88,21 @@ class OutPacket():
         return ip_header
 
     def tcp(self):
-        data_offset = (self.offset << 4) + 0
-        flags = self.fin + (self.syn << 1) + (self.rst << 2) + (self.psh << 3) + (self.ack << 4) + (self.urg << 5)
+        data_offset = (self.tcp_offset << 4) + 0
+        flags = self.tcp_flg_fin + (self.tcp_flg_syn << 1) + (self.tcp_flg_rst << 2) + (self.tcp_flg_psh << 3) + (self.tcp_flg_ack << 4) + (self.tcp_flg_urg << 5)
         tcp_header = struct.pack('!HHLLBBHHH',
-                                 self.srcp,
-                                 self.dstp,
-                                 self.seqn,
-                                 self.ackn,
+                                 self.tcp_srcp,
+                                 self.tcp_dstp,
+                                 self.tcp_seqn,
+                                 self.tcp_ackn,
                                  data_offset,
                                  flags, 
-                                 self.window,
-                                 self.checksum,
-                                 self.urgp)
+                                 self.tcp_window,
+                                 self.tcp_checksum,
+                                 self.tcp_urgp)
         #pseudo header fields
-        source_ip = socket.inet_aton(self.srcip)
-        destination_ip = socket.inet_aton(self.dstip)
+        source_ip = socket.inet_aton(self.ip_srcip)
+        destination_ip = socket.inet_aton(self.ip_dstip)
         reserved = 0
         protocol = socket.IPPROTO_TCP
         total_length = len(tcp_header) + len(self.payload)
@@ -116,15 +116,15 @@ class OutPacket():
         psh = psh + tcp_header + self.payload
         tcp_checksum = self.tcp_checksum(psh)
         tcp_header = struct.pack("!HHLLBBH",
-                            self.srcp,
-                            self.dstp,
-                            self.seqn,
-                            self.ackn,
+                            self.tcp_srcp,
+                            self.tcp_dstp,
+                            self.tcp_seqn,
+                            self.tcp_ackn,
                             data_offset,
                             flags,
-                            self.window)
+                            self.tcp_window)
         tcp_header += struct.pack('H', tcp_checksum)
-        tcp_header += struct.pack('!H', self.urgp)
+        tcp_header += struct.pack('!H', self.tcp_:urgp)
         return tcp_header
 
     def packet(self):
@@ -133,23 +133,23 @@ class OutPacket():
         return ip + tcp + self.payload
 
     def __init__(self, sock, data=''):
-        self.srcip = socket.gethostbyname(socket.gethostname())
-        self.dstip = sock.ip
-        self.srcp = sock.port
-        self.dstp = 80
-        self.seqn = sock.seqn
-        self.ackn = sock.ackn
-        self.offset = 5 # Data offset: 5x4 = 20 bytes
-        self.reserved = 0
-        self.urg = 0
-        self.ack = 0
-        self.psh = 0
-        self.rst = 0
-        self.syn = 0
-        self.fin = 0
-        self.window = socket.htons(5840)
-        self.checksum = 0
-        self.urgp = 0
+        self.ip_srcip = socket.gethostbyname(socket.gethostname())
+        self.ip_dstip = sock.ip
+        self.tcp_srcp = sock.port
+        self.tcp_dstp = 80
+        self.tcp_seqn = sock.seqn
+        self.tcp_ackn = sock.ackn
+        self.tcp_offset = 5 # Data offset: 5x4 = 20 bytes
+        self.tcp_reserved = 0
+        self.tcp_flg_urg = 0
+        self.tcp_flg_ack = 0
+        self.tcp_flg_psh = 0
+        self.tcp_flg_rst = 0
+        self.tcp_flg_syn = 0
+        self.tcp_flg_fin = 0
+        self.tcp_window = socket.htons(5840)
+        self.tcp_checksum = 0
+        self.tcp_urgp = 0
 
         if len(data) % 2 == 1:
             data += "0"
