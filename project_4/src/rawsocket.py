@@ -49,7 +49,7 @@ class OutPacket():
 
 	def checksum(self, data):
 		s = 0
-	    n = len(data) % 2
+		n = len(data) % 2
 	    for i in range(0, len(data)-n, 2):
 	        s+= ord(data[i]) + (ord(data[i+1]) << 8)
 	    if n:
