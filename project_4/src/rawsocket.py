@@ -145,10 +145,10 @@ class RawSocket():
 		self.socket.sendto(ack.packet(), (self.ip, 0))
 
 	def send(self, data):
-		while True:
-			self.ip
-		#packet = OutPacket(self.ip, data)
-		#return self.socket.sendto(packet.packet(), (self.ip, 0))
+		packet = OutPacket(self.ip, data)
+		packet.tcp_ack = 1
+		packet.tcp_psh = 1
+		return self.socket.sendto(packet.packet(), (self.ip, 0))
 
 	def recv_next(self, bytes=65565):
 		while True:
