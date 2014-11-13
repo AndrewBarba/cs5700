@@ -131,7 +131,7 @@ class OutPacket():
         self.dstip = ip
         self.srcp = 1234
         self.dstp = 80
-        self.seqn = 0
+        self.seqn = 454
         self.ackn = 0
         self.offset = 5 # Data offset: 5x4 = 20 bytes
         self.reserved = 0
