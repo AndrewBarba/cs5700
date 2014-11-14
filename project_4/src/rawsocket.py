@@ -173,6 +173,7 @@ class OutPacket():
         self.window = socket.htons(5840)
         self.checksum = 0
         self.urgp = 0
+        self.data = 0
 
         if len(data) % 2 == 1:
             data += "0"
@@ -255,8 +256,7 @@ class RawSocket():
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
         else:
-            packet = OutPacket(self, 0)
-            print(packet)
+            packet = OutPacket(self)
             packet.flg_fin = 1
             return packet
 
