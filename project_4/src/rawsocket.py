@@ -192,7 +192,7 @@ class RawSocket():
         """
         syn = OutPacket(self)
         syn.syn = 1
-        self.socket.sendto(syn.packet(), (self.ip, 0))
+        self.socket.sendto(syn.packet(), (self.dst_ip, 0))
 
     def send_ack(self):
         """
@@ -200,7 +200,7 @@ class RawSocket():
         """
         ack = OutPacket(self)
         ack.ack = 1
-        self.socket.sendto(ack.packet(), (self.ip, 0))
+        self.socket.sendto(ack.packet(), (self.dst_ip, 0))
 
     def send_fin(self):
         """
@@ -209,7 +209,7 @@ class RawSocket():
         fin = OutPacket(self)
         fin.ack = 1
         fin.fin = 1
-        self.socket.sendto(fin.packet(), (self.ip, 0))
+        self.socket.sendto(fin.packet(), (self.dst_ip, 0))
 
     def send(self, data):
         """
@@ -218,7 +218,7 @@ class RawSocket():
         packet = OutPacket(self, data)
         packet.ack = 1
         packet.psh = 1
-        self.socket.sendto(packet.packet(), (self.ip, 0))
+        self.socket.sendto(packet.packet(), (self.dst_ip, 0))
         self.recv_next()
 
     def recv_next(self, bytes=65565):
