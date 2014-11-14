@@ -256,7 +256,7 @@ class RawSocket():
                 return packet
         else:
             packet = OutPacket(self)
-            packet.data = ''
+            packet.data = ""
             packet.flg_fin = 1
             return packet
 
