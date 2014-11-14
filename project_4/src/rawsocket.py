@@ -258,6 +258,7 @@ class RawSocket():
         else:
             packet = OutPacket(self)
             packet.flg_fin = 1
+            packet = InPacket(packet).parse()
             return packet
 
     def recv(self, bytes=65565):
