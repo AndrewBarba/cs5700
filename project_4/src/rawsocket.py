@@ -1,6 +1,34 @@
 import socket, sys, struct, random
 
 class InPacket():
+    """
+    Class that represents a singe incoming TCP packet
+    """
+
+    def parse(self):
+        """
+        Parses an incoming TCP/IP packet 
+        """
+        header = struct.unpack('!HHLLBBHHH', self.packet[20:40])
+        self.src_prt = header[0]
+        self.dst_prt = header[1]
+        self.seqn = header[2]
+        self.ackn = header[3]
+        self.offset = header[4]
+        self.flags = header[5]
+        self.flg_fin = (self.flags & 1)
+        self.flg_syn = (self.flags & 2) >> 1
+        self.flg_rst = (self.flags & 4) >> 2
+        self.flg_psh = (self.flags & 8) >> 3
+        self.flg_ack = (self.flags & 16) >> 4
+        self.flg_urg = (self.flags & 32) >> 5
+        self.window = header[6]
+        self.chksum = header[7]
+        self.urg_prt = header[8]
+        self.header_size = 20 + (4 * (self.offset >> 4))
+        self.data_size = len(self.packet) - self.header_size
+        self.data = self.packet[self.header_size:]
+        return self
 
     def __init__(self, packet):
         self.packet = packet[0]
@@ -22,31 +50,12 @@ class InPacket():
         self.header_size = 0
         self.data_size = 0
         self.data = 0
-
-    def parse(self):
-        header = struct.unpack('!HHLLBBHHH', self.packet[20:40])
-        self.src_prt = header[0]
-        self.dst_prt = header[1]
-        self.seqn = header[2]
-        self.ackn = header[3]
-        self.offset = header[4]
-        self.flags = header[5]
-        self.flg_fin = (self.flags & 1)
-        self.flg_syn = (self.flags & 2) >> 1
-        self.flg_rst = (self.flags & 4) >> 2
-        self.flg_psh = (self.flags & 8) >> 3
-        self.flg_ack = (self.flags & 16) >> 4
-        self.flg_urg = (self.flags & 32) >> 5
-        self.window = header[6]
-        self.chksum = header[7]
-        self.urg_prt = header[8]
-        self.header_size = 20 + (4 * (self.offset >> 4))
-        self.data_size = len(self.packet) - self.header_size
-        self.data = self.packet[self.header_size:]
-        return self
         
 
 class OutPacket():
+    """
+    Class that represents a single outgoing TCP packet
+    """
 
     def tcp_checksum(self, msg):
         """
@@ -170,7 +179,11 @@ class OutPacket():
         self.payload = data
 
 class RawSocket():
-
+    """
+    Class that represents a single socket, backed by raw sockets
+    Attempts to mimick api of the built in socket class
+    """
+    
     def connect(self, domain, port):
         """
         Connects to the given domain by performing
@@ -267,4 +280,7 @@ class RawSocket():
         self.rsocket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
 
 def rawsocket():
+    """
+    Return an instance of a single raw socket
+    """
     return RawSocket()
