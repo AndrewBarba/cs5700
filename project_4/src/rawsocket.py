@@ -241,6 +241,7 @@ class RawSocket():
         Also updates our syn and ack sequence numbers
         """
         while True:
+            print("recieving...")
             packet = self.rsocket.recvfrom(65565)
             ip = packet[1][0]
             if ip == self.dst_ip:
