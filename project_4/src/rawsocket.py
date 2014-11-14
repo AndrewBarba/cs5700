@@ -256,7 +256,7 @@ class RawSocket():
                 return packet
         else:
             self.rsocket.close()
-            return
+            return OutPacket(self)
 
     def recv(self, bytes=65565):
         """
