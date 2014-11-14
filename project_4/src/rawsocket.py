@@ -149,8 +149,8 @@ class OutPacket():
     def __init__(self, sock, data=''):
         self.srcip = sock.src_ip
         self.dstip = sock.dst_ip
-        self.srcp = sock.dst_port
-        self.dstp = 80
+        self.srcp = sock.src_port
+        self.dstp = sock.dst_port
         self.seqn = sock.seqn
         self.ackn = sock.ackn
         self.offset = 5 # Data offset: 5x4 = 20 bytes
