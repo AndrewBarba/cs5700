@@ -243,8 +243,8 @@ class RawSocket():
         start = time.time()
         time.clock()
         elapsed=0
-        ttl=255
-        while elapsed < ttl:
+        ttl=5
+        if elapsed < ttl:
             elapsed = time.time() - start
             print("recieving... %s" %elapsed)
             packet = self.rsocket.recvfrom(65565)
@@ -254,6 +254,9 @@ class RawSocket():
                 self.seqn = packet.ackn
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
+        else:
+            self.rsocket.close()
+            return
 
     def recv(self, bytes=65565):
         """
