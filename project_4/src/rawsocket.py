@@ -230,7 +230,7 @@ class RawSocket():
         while True:
             packet = self.rsocket.recvfrom(65565)
             ip = packet[1][0]
-            if ip == self.ip:
+            if ip == self.dst_ip:
                 packet = InPacket(packet).parse()
                 self.seqn = packet.ackn
                 self.ackn = packet.seqn + packet.data_size + 1
