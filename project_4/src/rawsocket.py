@@ -1,4 +1,4 @@
-import socket, sys, struct, random, time
+import socket, sys, struct, random
 
 class InPacket():
     """
@@ -241,13 +241,7 @@ class RawSocket():
         sure it is a packet intented for this program
         Also updates our syn and ack sequence numbers
         """
-        start = time.time()
-        time.clock()
-        elapsed=0
-        ttl=5
-        if elapsed < ttl:
-            elapsed = time.time() - start
-            print("recieving... %s" %elapsed)
+        while True:
             packet = self.rsocket.recvfrom(65565)
             ip = packet[1][0]
             if ip == self.dst_ip:
@@ -255,13 +249,6 @@ class RawSocket():
                 self.seqn = packet.ackn
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
-        else:
-            packet = OutPacket(self, '')
-            packet.fin = 1
-            packet = packet.packet()
-            packet = InPacket(packet).parse()
-            print(packet.data)
-            return packet
             
 
     def recv(self, bytes=65565):
