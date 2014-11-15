@@ -267,7 +267,7 @@ class RawSocket():
         elapsed = 0
         while elapsed < 10:
             elapsed = time.time() - start
-            print(elapsed)
+            print("%s" %elapsed)
             packet = self.recv_next()
             data += packet.data
             self.send_ack()
