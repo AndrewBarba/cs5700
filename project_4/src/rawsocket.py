@@ -259,7 +259,7 @@ class RawSocket():
         start = time.time()
         time.clock()
         elapsed = 0
-        while elapsed < 180:
+        while elapsed < 10:
             elapsed = time.time() - start
             packet = self.recv_next()
             data += packet.data
