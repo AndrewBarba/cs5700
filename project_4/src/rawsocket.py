@@ -244,7 +244,7 @@ class RawSocket():
         start = time.time()
         time.clock()
         elapsed = 0
-        while elapsed < 10:
+        while elapsed < 180:
             elapsed = time.time() - start
             print("%s" %elapsed)
             packet = self.rsocket.recvfrom(65565)
