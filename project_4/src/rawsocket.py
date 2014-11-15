@@ -256,9 +256,10 @@ class RawSocket():
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
         else:
-            packet = OutPacket(self)
+            packet = OutPacket(self, '')
             packet.fin = 1
-            packet = InPacket(packet.packet()).parse()
+            packet = packet.packet()
+            packet = InPacket(packet).parse()
             return packet
             
 
