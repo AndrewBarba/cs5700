@@ -255,7 +255,7 @@ class RawSocket():
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
 
-        raise RuntimeError("Timeout")
+        raise Exception("Timeout")
             
 
     def recv(self, bytes=65565):
@@ -263,11 +263,7 @@ class RawSocket():
         Recieves the body of the response and returns it as a string
         """
         data = ""
-        start = time.time()
-        time.clock()
-        elapsed = 0
-        while elapsed < 10:
-            elapsed = time.time() - start
+        while True:
             print("%s" %elapsed)
             packet = self.recv_next()
             data += packet.data
