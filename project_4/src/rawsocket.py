@@ -255,7 +255,7 @@ class RawSocket():
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
 
-        raise Exception("Timeout")
+        raise RuntimeError("Timeout")
             
 
     def recv(self, bytes=65565):
