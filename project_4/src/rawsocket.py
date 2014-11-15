@@ -246,7 +246,7 @@ class RawSocket():
         elapsed = 0
         while elapsed < 10:
             elapsed = time.time() - start
-            print("%s" %elapsed)
+            #print("%s" %elapsed)
             packet = self.rsocket.recvfrom(65565)
             ip = packet[1][0]
             if ip == self.dst_ip:
