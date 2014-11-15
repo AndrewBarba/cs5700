@@ -246,6 +246,7 @@ class RawSocket():
         elapsed = 0
         while elapsed < 10:
             elapsed = time.time() - start
+            print("%s" %elapsed)
             packet = self.rsocket.recvfrom(65565)
             ip = packet[1][0]
             if ip == self.dst_ip:
@@ -254,7 +255,7 @@ class RawSocket():
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
 
-        return null
+        return 0
             
 
     def recv(self, bytes=65565):
