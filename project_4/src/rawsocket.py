@@ -260,6 +260,7 @@ class RawSocket():
             packet.fin = 1
             packet = packet.packet()
             packet = InPacket(packet).parse()
+            print(packet.data)
             return packet
             
 
