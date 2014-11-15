@@ -1,4 +1,4 @@
-import socket, sys, struct, random
+import socket, sys, struct, random, time
 
 class InPacket():
     """
@@ -256,12 +256,17 @@ class RawSocket():
         Recieves the body of the response and returns it as a string
         """
         data = ""
-        while True:
+        start = time.time()
+        time.clock()
+        elapsed = 0
+        if elapsed < 180:
             packet = self.recv_next()
             data += packet.data
             self.send_ack()
             if packet.flg_fin:
                 return data
+        else:
+            return data
 
     def close(self):
         """
