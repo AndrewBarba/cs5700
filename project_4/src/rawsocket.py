@@ -255,7 +255,7 @@ class RawSocket():
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
 
-        packet = OutPacket(self)
+        packet = OutPacket(self, '')
         packet.fin = 1
         return InPacket(packet.packet()).parse()
             
