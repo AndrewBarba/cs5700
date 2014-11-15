@@ -255,18 +255,19 @@ class RawSocket():
         """
         Recieves the body of the response and returns it as a string
         """
-        data = ""
+        data = "0"
         start = time.time()
         time.clock()
         elapsed = 0
-        if elapsed < 180:
+        while elapsed < 180:
+            elapsed = time.time() - start
             packet = self.recv_next()
             data += packet.data
             self.send_ack()
             if packet.flg_fin:
                 return data
-        else:
-            return data
+        
+        return data
 
     def close(self):
         """
