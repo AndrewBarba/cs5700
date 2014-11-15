@@ -255,7 +255,9 @@ class RawSocket():
                 self.ackn = packet.seqn + packet.data_size + 1
                 return packet
 
-        return 0
+        packet = OutPacket(self)
+        packet.fin = 1
+        return InPacket(packet.packet()).parse()
             
 
     def recv(self, bytes=65565):
@@ -275,7 +277,6 @@ class RawSocket():
             if packet.flg_fin:
                 return data
         
-        return data
 
     def close(self):
         """
