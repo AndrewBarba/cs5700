@@ -255,7 +255,7 @@ class RawSocket():
         """
         Recieves the body of the response and returns it as a string
         """
-        data = "0"
+        data = ""
         start = time.time()
         time.clock()
         elapsed = 0
