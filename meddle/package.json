@@ -1,0 +1,18 @@
+{
+    "name": "cs5700-webcrawler",
+    "version": "1.0.0",
+    "description": "Meddle Parser",
+    "url": "https://github.com/AndrewBarba/cs5700",
+    "author": "Andrew Barba",
+
+    "engines" : {
+        "node" : "0.10.x"
+    },
+
+    "dependencies": {
+        "underscore": "1.7.x",
+        "async": "0.9.x",
+        "to-utf-8": "1.1.x",
+        "pcap-parser": "0.2.x"
+    }
+}

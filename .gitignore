@@ -2,3 +2,5 @@
 ns2
 .nam
 *.pyc
+node_modules
+meddle/data
