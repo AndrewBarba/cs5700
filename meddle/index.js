@@ -3,7 +3,6 @@
 var fs = require('fs');
 var _ = require('underscore');
 var async = require('async');
-var utf8 = require('to-utf-8');
 var pcap = require('pcap-parser');
 
 // Constants
