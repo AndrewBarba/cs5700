@@ -17,8 +17,6 @@ fs.readdir(dir, function(err, files){
     	var path = dir + '/' + file;
     	var parser = pcap.parse(path);
 
-    	var pdata = new Buffer("");
-
     	parser.on('packet', function(packet) {
     		scan(packet);
     	});
