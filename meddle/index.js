@@ -37,43 +37,38 @@ fs.readdir(dir, function(err, files){
 function scan(packet) {
     var text = packet.data.toString('utf8').replace(/( |-|,)/gi, '').toLowerCase();
 
-    if (text.indexOf('werdna') >= 0) {
-        console.log('WARNING: PASS 1');
+    if (text.indexOf('[password]') >= 0) {
+        console.log('WARNING: PASSWORD');
         // console.log(text);
     }
 
-    if (text.indexOf('st1ffl3r') >= 0) {
-        console.log('WARNING: PASS 2');
+    if (text.indexOf('[first name]') >= 0) {
+        console.log('WARNING: FIRST NAME');
         // console.log(text);
     }
 
-    if (text.indexOf('andrew') >= 0) {
-        // console.log('WARNING: FIRST NAME');
+    if (text.indexOf('[last name]') >= 0) {
+        console.log('WARNING: LAST NAME');
         // console.log(text);
     }
 
-    if (text.indexOf('barba') >= 0) {
-        // console.log('WARNING: LAST NAME');
-        // console.log(text);
-    }
-
-    if (text.indexOf('abarba') >= 0) {
+    if (text.indexOf('[email]') >= 0) {
         console.log('WARNING: EMAIL');
         // console.log(text);
     }
 
-    if (text.indexOf('9085667524') >= 0) {
+    if (text.indexOf('[phone]') >= 0) {
         console.log('WARNING: PHONE');
         // console.log(text);
     }
 
     if (text.indexOf('lat') >= 0) {
-        // console.log('WARNING: LATITUDE');
+        console.log('WARNING: LATITUDE');
         // console.log(text);
     }
 
     if (text.indexOf('lon') >= 0) {
-        // console.log('WARNING: LONGITUDE');
+        console.log('WARNING: LONGITUDE');
         // console.log(text);
     }
 };
