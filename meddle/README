@@ -1,0 +1,42 @@
+
+Meddle Network Analysis
+=======================
+
+Name   : Andrew Barba
+Device : iPhone 6
+OS     : iOS 8.1.1
+
+#### Run
+
+	node index.js $dir
+
+#### Summary
+
+After running Meddle on my iPhone 6 I have came away with a few interesting
+pieces of information. First of all, a large majority of traffic from my phone
+is being sent over TLS/SSL. I expected this, however, it was nice to confirm
+this after analyzing the data. Something I did not expect was the sheer mass
+of data being sent and recieved by the device. I don't watch a lot of video
+and I rarely use apps like Instagram or Facebook which are very image heavy.
+A lot of the data was actually tracking related. Simply by looking at the
+request URI and seeing `/track` was enough to confirm that the request is meant
+to track some piece of information. I was also surprised to see the number of 
+Apple related pings my device sends. I don't use any Apple apps except for the
+built in Messages app, however, my device frequently phones home to Apple with
+information from Plists. My assumtion is that the device is frequently grabbing
+configuration data from Apple as well as reporting device statistics. 
+
+#### PII
+
+After combing through the data for personal infroamtion, I was only able to find
+references to my first and last name. The majority of these references came from
+Instagram which appears to be downloading images over an unencrypted connection
+and thus leaks the cookies sent along with the request. In these cookies is my
+username, session_id, and access_token. I was not able to confirm that the
+session_id and access_token could be used to spoof an account however. I also
+want to bring up the frequent references to GPS coordinates. Location tracking
+is somewhat of a hot topic as of late however I am not conviced the coordinates
+being sent are infact my location. Many students posted lat/lon from Yahoo! 
+Weather and I find it hard to believe they are actually sending exact user
+coordinates as opposed to general Boston, New York etc. coordinates. Regardless,
+the data sent is enough to pinpoint a user within a couple of miles. 
