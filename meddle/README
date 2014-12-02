@@ -10,6 +10,15 @@ OS     : iOS 8.1.1
 
 	node index.js $dir
 
+#### About
+
+I chose to write a small program in Node.js inorder to parse the captured
+network data. Node provides convenient event based API for parsing packets
+one-by-one instead of as a whole. The event based API makes it wasy to scan
+smaller chunks of data instead of one large file the way the the proveded
+scripts operate. By parsing smaller chunks at a time the script runs much
+faster and uses less memory. 
+
 #### Summary
 
 After running Meddle on my iPhone 6 I have came away with a few interesting

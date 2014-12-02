@@ -18,7 +18,7 @@ fs.readdir(dir, function(err, files){
     	var parser = pcap.parse(path);
 
     	parser.on('packet', function(packet) {
-    		scan(packet);
+    		scan(packet, path);
     	});
 
     	parser.on('end', function(){
@@ -32,16 +32,16 @@ fs.readdir(dir, function(err, files){
 });
 
 // scan for valuable info
-function scan(packet) {
+function scan(packet, path) {
     var text = packet.data.toString('utf8').replace(/( |-|,)/gi, '').toLowerCase();
 
     if (text.indexOf('[password]') >= 0) {
-        console.log('WARNING: PASSWORD');
+        console.log('WARNING: PASSWORD' + path);
         // console.log(text);
     }
 
     if (text.indexOf('[first name]') >= 0) {
-        console.log('WARNING: FIRST NAME');
+        console.log('WARNING: FIRST NAME ' + path);
         // console.log(text);
     }
 
@@ -51,22 +51,22 @@ function scan(packet) {
     }
 
     if (text.indexOf('[email]') >= 0) {
-        console.log('WARNING: EMAIL');
+        console.log('WARNING: EMAIL' + path);
         // console.log(text);
     }
 
     if (text.indexOf('[phone]') >= 0) {
-        console.log('WARNING: PHONE');
+        console.log('WARNING: PHONE' + path);
         // console.log(text);
     }
 
     if (text.indexOf('lat') >= 0) {
-        console.log('WARNING: LATITUDE');
+        console.log('WARNING: LATITUDE' + path);
         // console.log(text);
     }
 
     if (text.indexOf('lon') >= 0) {
-        console.log('WARNING: LONGITUDE');
+        console.log('WARNING: LONGITUDE' + path);
         // console.log(text);
     }
 };
