@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# kill server
+killall node > /dev/null 2>&1
+
+# remove old repo
+rm -rf CDN
+
+# clone new repo
+git clone https://github.com/soelgary/CDN.git CDN && cd CDN
+
+# Update script permissions
+chmod +x ./httpserver

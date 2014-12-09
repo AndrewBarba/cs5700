@@ -1,0 +1,21 @@
+#!/bin/bash
+port=  origin=
+
+# parse required arguments
+while getopts "p:o:n::u::i::" opt; do
+  case $opt in
+  p)
+      port=$OPTARG
+      ;;
+  o)
+      origin=$OPTARG
+      ;;
+  esac
+done
+
+# kill server
+killall node > /dev/null 2>&1
+
+# start server
+cd ./CDN
+nohup ./httpserver -p ${port} -o ${origin} >> "./http.log" 2>&1 &

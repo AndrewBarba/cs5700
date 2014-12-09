@@ -1,0 +1,36 @@
+#!/bin/bash
+start=$(date +%s)
+
+username= keyfile=
+
+# list of hosts
+HOSTS=($(cat ./hosts.txt |tr "\n" " "))
+
+# parse command line arguments
+while getopts "u:i:p::o::n::" opt; do
+  case $opt in
+  u)
+      username=$OPTARG
+      ;;
+  i)
+      keyfile=$OPTARG
+      ;;
+  esac
+done
+
+# Start DNS server
+echo "starting dns..."
+ssh -o StrictHostKeyChecking=no -i ${keyfile} ${username}@cs5700cdnproject.ccs.neu.edu "bash -s" -- < ./scripts/dns/run "$@"
+
+# Start HTTP replica servers
+i=0
+for host in "${HOSTS[@]}"
+do
+  ((i++))
+  echo "($i/${#HOSTS[@]}) starting $host..."
+  ssh -o StrictHostKeyChecking=no -i ${keyfile} ${username}@${host} "bash -s" -- < ./scripts/http/run "$@"
+done
+
+end=$(date +%s)
+diff=$((end-start))
+echo "Completed in ${diff}s"

@@ -1,0 +1,21 @@
+#!/bin/bash
+port=  name=
+
+# parse required arguments
+while getopts "p:n:o::u::i::" opt; do
+  case $opt in
+  p)
+      port=$OPTARG
+      ;;
+  n)
+      name=$OPTARG
+      ;;
+  esac
+done
+
+# kill server
+killall python > /dev/null 2>&1
+
+# start server
+cd ./CDN
+nohup ./dnsserver -p ${port} -n ${name} >> "./dns.log" 2>&1 &
